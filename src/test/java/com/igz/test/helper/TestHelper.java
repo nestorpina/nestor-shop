@@ -17,7 +17,8 @@ public class TestHelper {
 
 	public static ProductDto product1;
 	public static ProductDto product2;
-	public static List<ProductDto> products = null;
+	public static List<ProductDto> products;
+	public static UserDto user;
 	
 
 	public static void prepareDS(){
@@ -30,7 +31,7 @@ public class TestHelper {
 
         // Test data
 		UserManager userM = new UserManager();
-		UserDto user = new UserDto();
+		user = new UserDto();
 
 		user.setEmail("nestor.pina@intelygenz.com");
 		user.setFullname( "Nestor Pina" );

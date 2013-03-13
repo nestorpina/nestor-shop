@@ -2,10 +2,8 @@ package com.igz.manager;
 
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -26,8 +24,6 @@ import com.igz.entity.product.ProductManager;
 import com.igz.entity.shoppinglist.ShoppingListDto;
 import com.igz.entity.shoppinglist.ShoppingListManager;
 import com.igz.entity.shoppinglistitem.ShoppingListItemDto;
-import com.igz.entity.user.UserDto;
-import com.igz.entity.user.UserManager;
 import com.igz.exception.IgzException;
 import com.igz.test.helper.TestHelper;
 
@@ -39,7 +35,6 @@ public class ShoppingListManagerTest extends TestCase {
     		,new LocalBlobstoreServiceTestConfig());
 
     private final ShoppingListManager shoppingListM = new ShoppingListManager();
-	private final UserManager userM = new UserManager();
 	private final ProductManager productM = new ProductManager();
 
     @Rule
@@ -70,8 +65,7 @@ public class ShoppingListManagerTest extends TestCase {
     @Test
     public void testAddProducts() throws IgzException {
 
-    	final UserDto user = userM.get("nestor.pina@intelygenz.com");
-    	final ShoppingListDto list = createTestList(user);
+    	final ShoppingListDto list = createTestList();
     	
     	ofy().transact(new VoidWork() {
 			
@@ -93,8 +87,7 @@ public class ShoppingListManagerTest extends TestCase {
     @Test
     public void testAddExistingProducts() throws IgzException {
     	
-    	UserDto user = userM.get("nestor.pina@intelygenz.com");
-    	ShoppingListDto list = createTestList(user);
+    	ShoppingListDto list = createTestList();
     	shoppingListM.save(list);
 
     	for (ProductDto product : TestHelper.products) {
@@ -117,8 +110,7 @@ public class ShoppingListManagerTest extends TestCase {
     
     @Test
     public void removeItemFromShoppingList() {
-    	UserDto user = userM.get("nestor.pina@intelygenz.com");
-    	ShoppingListDto list = createTestList(user);
+    	ShoppingListDto list = createTestList();
     	shoppingListM.save(list);
 
     	
@@ -134,12 +126,12 @@ public class ShoppingListManagerTest extends TestCase {
     	assertEquals("Items in list after deletion", 1, itemList2.size());
     }
 
-	private ShoppingListDto createTestList(UserDto user) {
+	private ShoppingListDto createTestList() {
 		ShoppingListDto list = new ShoppingListDto();
     	list.setCreationDate(new Date());
     	list.setName("test shopping list");
     	list.setOpen(true);
-    	list.setOwner(user.getKey());
+    	list.setOwner(TestHelper.user.getKey());
 		return list;
 	}    
     

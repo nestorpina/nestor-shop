@@ -30,6 +30,9 @@ public class IgzException extends Exception {
 	public static final int IGZ_ERROR_DELETING_NOTIFICATION = 3201;
 	public static final int IGZ_SENDING_EMAIL_NOTIFICATION = 3202;
 	
+	//SHOPPING LIST
+	public static final int IGZ_SHOPPING_LIST_ITEM_NOT_FOUND = 4001;
+	
 	private static final String IGZ_UNKNOWN_EXCEPTION_CODE = "Unknown exception code received. code=";
 	
 	private static final HashMap<Integer, String> CODE_MESSAGES;
@@ -57,6 +60,9 @@ public class IgzException extends Exception {
 	    map.put(IGZ_INVALID_NOTIFICATION_PARAMS, "Invalid notification params.");
 	    map.put(IGZ_ERROR_DELETING_NOTIFICATION, "Error deleting a notification.");
 	    map.put(IGZ_SENDING_EMAIL_NOTIFICATION, "Invalid params to send the email notification.");
+	    
+	    //SHOPPING LIST
+	    map.put(IGZ_SHOPPING_LIST_ITEM_NOT_FOUND, "Shopping list item not found");
 	    
 	    CODE_MESSAGES = map;
 	}

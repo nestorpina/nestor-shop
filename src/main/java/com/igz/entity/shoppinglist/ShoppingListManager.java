@@ -10,6 +10,7 @@ import com.googlecode.objectify.Work;
 import com.igz.entity.product.ProductDto;
 import com.igz.entity.shoppinglistitem.ShoppingListItemDto;
 import com.igz.entity.shoppinglistitem.ShoppingListItemManager;
+import com.igz.exception.IgzException;
 
 public class ShoppingListManager extends ShoppingListFactory {
 	
@@ -65,16 +66,27 @@ public class ShoppingListManager extends ShoppingListFactory {
 	/**
 	 * Removes a item from the shopping list. 
 	 * 
-	 * @param shoppingListId
-	 * @param shoppingListItemId
+	 * @param listId
+	 * @param itemId
 	 */
-	public void removeProduct(final Long shoppingListId, final Long shoppingListItemId) {
+	public void removeProduct(final Long listId, final Long itemId) {
 		ofy().transact(new VoidWork() {
 			@Override
 			public void vrun() {
-				Key<ShoppingListItemDto> key = Key.create(Key.create(ShoppingListDto.class, shoppingListId), ShoppingListItemDto.class, shoppingListItemId);
+				Key<ShoppingListItemDto> key = Key.create(Key.create(ShoppingListDto.class, listId), ShoppingListItemDto.class, itemId);
 				ofy().delete().key(key);
 			}
 		});
+	}
+	
+	public void setProductQuantity(final Long listId, final Long itemId, final Integer quantity) throws IgzException {
+		// TODO : Transaction, but with exceptions?
+		final ShoppingListItemManager shoppingListItemM = new ShoppingListItemManager();
+		Key<ShoppingListItemDto> key = Key.create(Key.create(ShoppingListDto.class, listId), ShoppingListItemDto.class, itemId);
+		ShoppingListItemDto item = shoppingListItemM.getByKey(key);
+		if(item==null) {
+			throw new IgzException(IgzException.IGZ_SHOPPING_LIST_ITEM_NOT_FOUND);
+		}
+		
 	}
 }

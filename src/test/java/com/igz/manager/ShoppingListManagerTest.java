@@ -25,6 +25,7 @@ import com.igz.entity.shoppinglist.ShoppingListDto;
 import com.igz.entity.shoppinglist.ShoppingListManager;
 import com.igz.entity.shoppinglistitem.ShoppingListItemDto;
 import com.igz.exception.IgzException;
+import com.igz.test.helper.ExceptionMatcher;
 import com.igz.test.helper.TestHelper;
 
 @RunWith(value=BlockJUnit4ClassRunner.class)
@@ -58,10 +59,14 @@ public class ShoppingListManagerTest extends TestCase {
     	thrown.expect(IllegalArgumentException.class);
     	
     	ShoppingListDto list = new ShoppingListDto();
-    	ProductDto product = productM.find(1).get(0);
-   		shoppingListM.addProduct(list, product);
+   		shoppingListM.addProduct(list, TestHelper.product1);
     }
 
+    /** 
+     * We add two products, and test the shopping list size afterwards
+     * 
+     * @throws IgzException
+     */
     @Test
     public void testAddProducts() throws IgzException {
 
@@ -83,12 +88,18 @@ public class ShoppingListManagerTest extends TestCase {
     	List<ShoppingListItemDto> itemList = shoppingListM.getShoppingListItems(list.getId());
     	assertEquals("Item list size", 2, itemList.size());
     }
-    
+
+    /**
+     * We add two products, and one of the previous products again, we check
+     * - the shopping list size
+     * - the quantity of each item ordered 
+     * 
+     * @throws IgzException
+     */
     @Test
     public void testAddExistingProducts() throws IgzException {
     	
-    	ShoppingListDto list = createTestList();
-    	shoppingListM.save(list);
+    	ShoppingListDto list = createAndSaveTestList();
 
     	for (ProductDto product : TestHelper.products) {
     		shoppingListM.addProduct(list, product);
@@ -108,10 +119,14 @@ public class ShoppingListManagerTest extends TestCase {
     	assertEquals("Item list size", 2, itemList.size());
     }
     
+    /**
+     * We add two products, delete one and test the shopping list size afterwards
+     * 
+     * @throws IgzException
+     */    
     @Test
-    public void removeItemFromShoppingList() {
-    	ShoppingListDto list = createTestList();
-    	shoppingListM.save(list);
+    public void testRemoveItemFromShoppingList() {
+    	ShoppingListDto list = createAndSaveTestList();
 
     	
     	ShoppingListItemDto addedProduct = null;
@@ -126,6 +141,42 @@ public class ShoppingListManagerTest extends TestCase {
     	assertEquals("Items in list after deletion", 1, itemList2.size());
     }
 
+    
+    /**
+     * We try to set the quantity of an item order, where that item doesn't exists
+     * @throws IgzException 
+     */
+    @Test
+    public void testSetQuantityOfNonExistantProduct() throws IgzException {
+    	thrown.expect(IgzException.class);
+    	thrown.expect(ExceptionMatcher.hasCode(IgzException.IGZ_SHOPPING_LIST_ITEM_NOT_FOUND));
+    	
+    	ShoppingListDto list = createAndSaveTestList();    	
+    	shoppingListM.setProductQuantity(list.getId(), TestHelper.product1.getId(), 20);
+    }
+    
+    /**
+     * We try to set the quantity of an item order, and we test the quantity was changed
+     * @throws IgzException 
+     */
+    @Test
+    public void testSetQuantityOfProduct() throws IgzException {
+    	ShoppingListDto list = createAndSaveTestList();
+    	shoppingListM.addProduct(list, TestHelper.product1);
+    	shoppingListM.setProductQuantity(list.getId(), TestHelper.product1.getId(), 20);
+    	List<ShoppingListItemDto> products = shoppingListM.getShoppingListItems(list.getId());
+    	assertEquals("Quantity of product1 ordered", 20, products.get(0).getQuantity().intValue());
+    }
+    
+
+    /* --------------- Helper methods --------------------- */
+    
+    private ShoppingListDto createAndSaveTestList() {
+    	ShoppingListDto list = createTestList();
+    	shoppingListM.save(list);
+    	return list;
+    }
+    
 	private ShoppingListDto createTestList() {
 		ShoppingListDto list = new ShoppingListDto();
     	list.setCreationDate(new Date());

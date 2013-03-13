@@ -14,7 +14,15 @@ public class ShoppingListFactory extends AbstractFactory<ShoppingListDto> {
         super(ShoppingListDto.class);
     }
     
-    public List<ShoppingListItemDto> getItemsFromList(Key<ShoppingListDto> shoppingListkey) {
-    	return ofy().load().type(ShoppingListItemDto.class).ancestor(shoppingListkey).list();
+    /**
+     * Get the shopping list items associated to a list
+     * 
+     * @param shoppingListId
+     * @return
+     */
+    public List<ShoppingListItemDto> getShoppingListItems(Long shoppingListId) {
+		return ofy().load().type(ShoppingListItemDto.class)
+				.ancestor(Key.create(ShoppingListDto.class, shoppingListId))
+				.list();
     }
 }

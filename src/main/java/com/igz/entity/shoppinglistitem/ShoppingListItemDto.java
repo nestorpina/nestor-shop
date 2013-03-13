@@ -31,6 +31,9 @@ public class ShoppingListItemDto implements Serializable{
 	private Date dateBought;
 	private Integer quantity;
 	
+	public Key<ShoppingListItemDto> getKey() {
+		return Key.create(ShoppingListItemDto.class, id);
+	}
 	public Long getId() {
 		return id;
 	}

@@ -1,6 +1,8 @@
 package com.igz.test.helper;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import com.google.appengine.api.NamespaceManager;
 import com.googlecode.objectify.ObjectifyService;
@@ -13,7 +15,11 @@ import com.igz.entity.user.UserManager;
 
 public class TestHelper {
 
+	public static ProductDto product1;
+	public static ProductDto product2;
+	public static List<ProductDto> products = null;
 	
+
 	public static void prepareDS(){
 		NamespaceManager.set("test");
 		
@@ -31,22 +37,27 @@ public class TestHelper {
 		userM.save( user );
 		
 		ProductManager productM = new ProductManager();
-		ProductDto p = new ProductDto();
-    	p.setCreationDate(new Date());
-    	p.setName("Pack of 6 Eggs");
-    	p.setDescription("Fresh eggs");
-    	p.setUnitType(ProductDto.UnitType.ITEM);
-    	p.setUnits(6);
-    	productM.save(p);
+		product1 = new ProductDto();
+    	product1.setCreationDate(new Date());
+    	product1.setName("Pack of 6 Eggs");
+    	product1.setDescription("Fresh eggs");
+    	product1.setUnitType(ProductDto.UnitType.ITEM);
+    	product1.setUnits(6);
+    	product1.setId(1L);
+    	productM.save(product1);
     	
-    	p = new ProductDto();
-    	p.setCreationDate(new Date());
-    	p.setName("Rice");
-    	p.setDescription("a pack of rice");
-    	p.setUnitType(ProductDto.UnitType.KG);
-    	p.setUnits(1);
-    	productM.save(p);
+    	product2 = new ProductDto();
+    	product2.setCreationDate(new Date());
+    	product2.setName("Rice");
+    	product2.setDescription("a pack of rice");
+    	product2.setUnitType(ProductDto.UnitType.KG);
+    	product2.setUnits(1);
+    	product2.setId(2L);
+    	productM.save(product2);
     	
+    	products = new ArrayList<ProductDto>();
+    	products.add(product1);
+    	products.add(product2);
 	}
 	
 }

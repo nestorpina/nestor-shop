@@ -1,7 +1,11 @@
 package com.igz.manager;
 
+import static com.googlecode.objectify.ObjectifyService.ofy;
+
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -16,6 +20,7 @@ import org.junit.runners.BlockJUnit4ClassRunner;
 import com.google.appengine.tools.development.testing.LocalBlobstoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.googlecode.objectify.VoidWork;
 import com.igz.entity.product.ProductDto;
 import com.igz.entity.product.ProductManager;
 import com.igz.entity.shoppinglist.ShoppingListDto;
@@ -30,10 +35,10 @@ import com.igz.test.helper.TestHelper;
 public class ShoppingListManagerTest extends TestCase {
 
     private final LocalServiceTestHelper helper = new LocalServiceTestHelper(
-			 new LocalDatastoreServiceTestConfig().setDefaultHighRepJobPolicyUnappliedJobPercentage(1)
+			 new LocalDatastoreServiceTestConfig().setDefaultHighRepJobPolicyUnappliedJobPercentage(20)
     		,new LocalBlobstoreServiceTestConfig());
 
-    private final ShoppingListManager shoppinListM = new ShoppingListManager();
+    private final ShoppingListManager shoppingListM = new ShoppingListManager();
 	private final UserManager userM = new UserManager();
 	private final ProductManager productM = new ProductManager();
 
@@ -59,22 +64,29 @@ public class ShoppingListManagerTest extends TestCase {
     	
     	ShoppingListDto list = new ShoppingListDto();
     	ProductDto product = productM.find(1).get(0);
-   		shoppinListM.addProduct(list, product);
+   		shoppingListM.addProduct(list, product);
     }
 
     @Test
     public void testAddProducts() throws IgzException {
-    	
-    	UserDto user = userM.get("nestor.pina@intelygenz.com");
-    	ShoppingListDto list = createTestList(user);
-    	shoppinListM.save(list);
 
-    	List<ProductDto> products = productM.find(2);
-    	for (ProductDto product : products) {
-    		shoppinListM.addProduct(list, product);
-		}
+    	final UserDto user = userM.get("nestor.pina@intelygenz.com");
+    	final ShoppingListDto list = createTestList(user);
     	
-    	List<ShoppingListItemDto> itemList = shoppinListM.getItemsFromList(list.getKey());
+    	ofy().transact(new VoidWork() {
+			
+			@Override
+			public void vrun() {
+				
+				shoppingListM.save(list);
+				
+				for (ProductDto product : TestHelper.products) {
+					shoppingListM.addProduct(list, product);
+				}
+				
+			}
+		});
+    	List<ShoppingListItemDto> itemList = shoppingListM.getShoppingListItems(list.getId());
     	assertEquals("Item list size", 2, itemList.size());
     }
     
@@ -83,16 +95,15 @@ public class ShoppingListManagerTest extends TestCase {
     	
     	UserDto user = userM.get("nestor.pina@intelygenz.com");
     	ShoppingListDto list = createTestList(user);
-    	shoppinListM.save(list);
+    	shoppingListM.save(list);
 
-    	List<ProductDto> products = productM.find(2);
-    	for (ProductDto product : products) {
-    		shoppinListM.addProduct(list, product);
+    	for (ProductDto product : TestHelper.products) {
+    		shoppingListM.addProduct(list, product);
 		}
-    	ProductDto firstProduct = products.get(0);
-		shoppinListM.addProduct(list, firstProduct);
+    	ProductDto firstProduct = TestHelper.product1;
+		shoppingListM.addProduct(list, firstProduct);
     	
-    	List<ShoppingListItemDto> itemList = shoppinListM.getItemsFromList(list.getKey());
+    	List<ShoppingListItemDto> itemList = shoppingListM.getShoppingListItems(list.getId());
     	assertEquals("Item list size", 2, itemList.size());
     	for (ShoppingListItemDto item : itemList) {
     		if(item.getProduct().getId().equals(firstProduct.getId())) {
@@ -102,6 +113,25 @@ public class ShoppingListManagerTest extends TestCase {
     		}
 		}
     	assertEquals("Item list size", 2, itemList.size());
+    }
+    
+    @Test
+    public void removeItemFromShoppingList() {
+    	UserDto user = userM.get("nestor.pina@intelygenz.com");
+    	ShoppingListDto list = createTestList(user);
+    	shoppingListM.save(list);
+
+    	
+    	ShoppingListItemDto addedProduct = null;
+    	for (ProductDto product : TestHelper.products) {
+    		addedProduct = shoppingListM.addProduct(list, product);
+		}
+    	
+    	shoppingListM.removeProduct(list.getId(), addedProduct.getId());
+    	
+    	// Retrieve again from datastore
+    	List<ShoppingListItemDto> itemList2 = shoppingListM.getShoppingListItems(list.getId());
+    	assertEquals("Items in list after deletion", 1, itemList2.size());
     }
 
 	private ShoppingListDto createTestList(UserDto user) {

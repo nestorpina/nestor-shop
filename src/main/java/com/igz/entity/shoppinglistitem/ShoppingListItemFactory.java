@@ -8,10 +8,10 @@ import java.util.List;
 import com.googlecode.objectify.Key;
 import com.igz.entity.product.ProductDto;
 import com.igz.entity.shoppinglist.ShoppingListDto;
-import com.igzcode.java.gae.pattern.AbstractFactory;
+import com.igz.java.gae.pattern.AbstractFactoryPlus;
 
 public class ShoppingListItemFactory extends
-		AbstractFactory<ShoppingListItemDto> {
+		AbstractFactoryPlus<ShoppingListItemDto> {
 
 	public ShoppingListItemFactory() {
 		super(ShoppingListItemDto.class);

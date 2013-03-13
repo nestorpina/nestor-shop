@@ -1,8 +1,8 @@
 package com.igz.entity.product;
 
-import com.igzcode.java.gae.pattern.AbstractFactory;
+import com.igz.java.gae.pattern.AbstractFactoryPlus;
 
-public class ProductFactory extends AbstractFactory<ProductDto> {
+public class ProductFactory extends AbstractFactoryPlus<ProductDto> {
 
 	protected ProductFactory() {
 		super(ProductDto.class);

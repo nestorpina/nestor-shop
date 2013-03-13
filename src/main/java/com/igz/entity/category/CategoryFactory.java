@@ -1,8 +1,8 @@
 package com.igz.entity.category;
 
-import com.igzcode.java.gae.pattern.AbstractFactory;
+import com.igz.java.gae.pattern.AbstractFactoryPlus;
 
-public class CategoryFactory extends AbstractFactory<CategoryDto> {
+public class CategoryFactory extends AbstractFactoryPlus<CategoryDto> {
 
 	protected CategoryFactory() {
 		super(CategoryDto.class);

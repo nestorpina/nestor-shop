@@ -6,9 +6,9 @@ import java.util.List;
 
 import com.googlecode.objectify.Key;
 import com.igz.entity.shoppinglistitem.ShoppingListItemDto;
-import com.igzcode.java.gae.pattern.AbstractFactory;
+import com.igz.java.gae.pattern.AbstractFactoryPlus;
 
-public class ShoppingListFactory extends AbstractFactory<ShoppingListDto> {
+public class ShoppingListFactory extends AbstractFactoryPlus<ShoppingListDto> {
 
     protected ShoppingListFactory() {
         super(ShoppingListDto.class);

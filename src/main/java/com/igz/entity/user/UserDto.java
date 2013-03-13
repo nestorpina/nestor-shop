@@ -3,6 +3,7 @@ package com.igz.entity.user;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.googlecode.objectify.Key;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
@@ -16,6 +17,9 @@ public class UserDto implements Serializable {
 	private Date created;
 	private Date lastLogin;
 	
+	public Key<UserDto> getKey() {
+		return Key.create(UserDto.class, email);
+	}
 	
 	public UserDto() {
 		super();

@@ -154,6 +154,18 @@ public class ShoppingListManagerTest extends TestCase {
     }
     
     /**
+     * We try to set the quantity of an item order, setting it to a negative number
+     * @throws IgzException 
+     */
+    @Test
+    public void testSetQuantityOfProductWithWrongParameters() throws IgzException {
+    	thrown.expect(IllegalArgumentException.class);
+    	
+    	ShoppingListDto list = createAndSaveTestList();    	
+    	shoppingListM.setProductQuantity(list.getId(), TestHelper.product1.getId(), -1);
+    }
+    
+    /**
      * We try to set the quantity of an item order, and we test the quantity was changed
      * @throws IgzException 
      */
@@ -165,6 +177,19 @@ public class ShoppingListManagerTest extends TestCase {
     	List<ShoppingListItemDto> products = shoppingListM.getShoppingListItems(list.getId());
     	assertEquals("Quantity of product1 ordered", 20, products.get(0).getQuantity().intValue());
     }
+    
+    /**
+     * We try to set the quantity of an item order to 0, and we test that the item is removed
+     * @throws IgzException 
+     */
+    @Test
+    public void testSetQuantityOfProductToZero() throws IgzException {
+    	ShoppingListDto list = createAndSaveTestList();
+    	ShoppingListItemDto item = shoppingListM.addProduct(list, TestHelper.product1);
+    	shoppingListM.setProductQuantity(list.getId(), item.getId(), 0);
+    	List<ShoppingListItemDto> products = shoppingListM.getShoppingListItems(list.getId());
+    	assertEquals("Product list size should be empty", true, products.isEmpty());
+    }    
     
 
     /* --------------- Helper methods --------------------- */

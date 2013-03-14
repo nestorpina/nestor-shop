@@ -189,6 +189,45 @@ public class ShoppingListManagerTest extends TestCase {
     	shoppingListM.setProductQuantity(list.getId(), item.getId(), 0);
     	List<ShoppingListItemDto> products = shoppingListM.getShoppingListItems(list.getId());
     	assertEquals("Product list size should be empty", true, products.isEmpty());
+    }  
+    
+    /**
+     * We try to buy a product with wrong parameters
+     * @throws IgzException
+     */
+    @Test
+    public void testBuyProductWithWrongParameters() throws IgzException {
+    	thrown.expect(IllegalArgumentException.class);
+    	shoppingListM.buyProduct(null, null, null);
+    }
+
+    /**
+     * We try to buy a product that doesn't exist on the list 
+     * @throws IgzException
+     */
+    @Test
+    public void testBuyProductNonExistant() throws IgzException {
+    	thrown.expect(IgzException.class);
+    	thrown.expect(ExceptionMatcher.hasCode(IgzException.IGZ_SHOPPING_LIST_ITEM_NOT_FOUND));
+
+    	ShoppingListDto list = createAndSaveTestList();
+    	shoppingListM.buyProduct(list.getId(), 1L, new Date());
+    }
+
+    /**
+     * We try to buy a product, and we test the date was added successfully
+     * @throws IgzException
+     */
+    @Test
+    public void testBuyProduct() throws IgzException {
+
+    	ShoppingListDto list = createAndSaveTestList();
+    	ShoppingListItemDto item = shoppingListM.addProduct(list, TestHelper.product1);
+    	Date dateBought = new Date();
+    	shoppingListM.buyProduct(list.getId(), item.getId(), dateBought);
+    	List<ShoppingListItemDto> products = shoppingListM.getShoppingListItems(list.getId());
+    	assertEquals("Date bought set", dateBought, products.get(0).getDateBought());
+    	
     }    
     
 

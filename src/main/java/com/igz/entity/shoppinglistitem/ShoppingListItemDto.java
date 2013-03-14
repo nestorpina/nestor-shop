@@ -7,6 +7,7 @@ import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Ref;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Index;
 import com.googlecode.objectify.annotation.Load;
 import com.googlecode.objectify.annotation.Parent;
 import com.igz.entity.product.ProductDto;
@@ -26,9 +27,9 @@ public class ShoppingListItemDto implements Serializable{
 	@Id private Long id;
 	@Load private Ref<ProductDto> product;
 	@Parent private Key<ShoppingListDto> shoppingListKey;
-	private Date dateAdded;
+	@Index private Date dateAdded;
 	private Date dateModified;
-	private Date dateBought;
+	@Index private Date dateBought;
 	private Integer quantity;
 	
 	public Key<ShoppingListItemDto> getKey() {

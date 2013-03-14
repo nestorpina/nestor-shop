@@ -2,6 +2,7 @@ package com.igz.entity.shoppinglist;
 
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
+import java.util.Date;
 import java.util.logging.Logger;
 
 import com.googlecode.objectify.Key;
@@ -87,11 +88,13 @@ public class ShoppingListManager extends ShoppingListFactory {
 	 * @param listId
 	 * @param itemId
 	 * @param quantity
-	 * @throws IgzException - If any parameter is null or quantity < 0
+	 * @throws IgzException - IGZ_SHOPPING_LIST_ITEM_NOT_FOUND if the item doesn't exists on the list
+	 * @throws IllegalArgumentException - If any parameter is null or quantity < 0
+	 * 
 	 */
 	public void setProductQuantity(final Long listId, final Long itemId, final Integer quantity) throws IgzException {
 		if(listId == null || itemId == null || quantity == null || quantity.intValue() < 0) {
-			throw new IllegalArgumentException("Shopping List must have an id (saved state)");
+			throw new IllegalArgumentException("parameters must not be null and quantity must be > 0");
 		}
 		// TODO : Transaction, but with exceptions?
 		final ShoppingListItemManager shoppingListItemM = new ShoppingListItemManager();
@@ -104,8 +107,34 @@ public class ShoppingListManager extends ShoppingListFactory {
 			removeProduct(listId, itemId);
 		} else {
 			item.setQuantity(quantity);
+			item.setDateModified(new Date());
 			shoppingListItemM.save(item);
 		}
 		
+	}
+
+	/**
+	 * Buy a product from a shopping list. If the product had quantity > 1, it buys all of it
+	 * 
+	 * @param listId
+	 * @param itemId
+	 * @param boughtDate
+	 * 
+	 * @throws IgzException - IGZ_SHOPPING_LIST_ITEM_NOT_FOUND if the item doesn't exists on the list
+	 * @throws IllegalArgumentException - If any parameter is null
+	 */
+	public void buyProduct(Long listId, Long itemId, Date boughtDate) throws IgzException {
+		if(listId == null || itemId == null || boughtDate == null ) {
+			throw new IllegalArgumentException("parameters must not be null ");
+		}
+		final ShoppingListItemManager shoppingListItemM = new ShoppingListItemManager();
+		Key<ShoppingListItemDto> key = shoppingListItemM.getKey(listId, itemId);
+		ShoppingListItemDto item = shoppingListItemM.getByKey(key);
+		if(item==null) {
+			throw new IgzException(IgzException.IGZ_SHOPPING_LIST_ITEM_NOT_FOUND);
+		}
+		item.setDateBought(boughtDate);
+		item.setDateModified(new Date());
+		shoppingListItemM.save(item);		
 	}
 }

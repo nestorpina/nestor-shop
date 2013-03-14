@@ -11,8 +11,8 @@ public abstract class AbstractFactoryPlus<DtoType> extends AbstractFactory<DtoTy
 		super(p_class);
 	}
 	
-    public DtoType getByKey(Key<DtoType> p_commentK ){
-    	return ofy().load().key( p_commentK ).get();
+    public DtoType getByKey(Key<DtoType> key ){
+    	return ofy().load().key( key ).get();
     }
 
 }

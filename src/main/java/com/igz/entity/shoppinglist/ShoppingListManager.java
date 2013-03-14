@@ -79,13 +79,31 @@ public class ShoppingListManager extends ShoppingListFactory {
 		});
 	}
 	
+	/**
+	 * Sets the quantity of a product in the shopping list to the specified quantity.
+	 * If the quantity is set to 0, this is the same as calling removeProduct 
+	 * 
+	 * @param listId
+	 * @param itemId
+	 * @param quantity
+	 * @throws IgzException - If any parameter is null or quantity < 0
+	 */
 	public void setProductQuantity(final Long listId, final Long itemId, final Integer quantity) throws IgzException {
+		if(listId == null || itemId == null || quantity == null || quantity.intValue() < 0) {
+			throw new IllegalArgumentException("Shopping List must have an id (saved state)");
+		}
 		// TODO : Transaction, but with exceptions?
 		final ShoppingListItemManager shoppingListItemM = new ShoppingListItemManager();
 		Key<ShoppingListItemDto> key = Key.create(Key.create(ShoppingListDto.class, listId), ShoppingListItemDto.class, itemId);
 		ShoppingListItemDto item = shoppingListItemM.getByKey(key);
 		if(item==null) {
 			throw new IgzException(IgzException.IGZ_SHOPPING_LIST_ITEM_NOT_FOUND);
+		}
+		if(quantity.intValue() == 0) {
+			removeProduct(listId, itemId);
+		} else {
+			item.setQuantity(quantity);
+			shoppingListItemM.save(item);
 		}
 		
 	}

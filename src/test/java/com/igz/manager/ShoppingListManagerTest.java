@@ -20,7 +20,6 @@ import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestC
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.googlecode.objectify.VoidWork;
 import com.igz.entity.product.ProductDto;
-import com.igz.entity.product.ProductManager;
 import com.igz.entity.shoppinglist.ShoppingListDto;
 import com.igz.entity.shoppinglist.ShoppingListManager;
 import com.igz.entity.shoppinglistitem.ShoppingListItemDto;
@@ -36,7 +35,6 @@ public class ShoppingListManagerTest extends TestCase {
     		,new LocalBlobstoreServiceTestConfig());
 
     private final ShoppingListManager shoppingListM = new ShoppingListManager();
-	private final ProductManager productM = new ProductManager();
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();  
@@ -162,8 +160,8 @@ public class ShoppingListManagerTest extends TestCase {
     @Test
     public void testSetQuantityOfProduct() throws IgzException {
     	ShoppingListDto list = createAndSaveTestList();
-    	shoppingListM.addProduct(list, TestHelper.product1);
-    	shoppingListM.setProductQuantity(list.getId(), TestHelper.product1.getId(), 20);
+    	ShoppingListItemDto item = shoppingListM.addProduct(list, TestHelper.product1);
+    	shoppingListM.setProductQuantity(list.getId(), item.getId(), 20);
     	List<ShoppingListItemDto> products = shoppingListM.getShoppingListItems(list.getId());
     	assertEquals("Quantity of product1 ordered", 20, products.get(0).getQuantity().intValue());
     }

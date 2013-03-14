@@ -16,8 +16,8 @@ import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.igz.entity.user.UserDto;
 import com.igz.entity.user.UserManager;
 import com.igz.exception.IgzException;
+import com.igz.helpers.TestHelper;
 import com.igz.test.helper.ExceptionMatcher;
-import com.igz.test.helper.TestHelper;
 
 @RunWith(value=BlockJUnit4ClassRunner.class)
 public class UserManagerTest extends TestCase {

@@ -18,7 +18,7 @@ import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.igz.entity.product.ProductDto;
 import com.igz.entity.product.ProductManager;
 import com.igz.exception.IgzException;
-import com.igz.test.helper.TestHelper;
+import com.igz.helpers.TestHelper;
 
 @RunWith(value=BlockJUnit4ClassRunner.class)
 public class ProductManagerTest extends TestCase {

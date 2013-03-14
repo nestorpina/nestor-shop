@@ -24,8 +24,8 @@ import com.igz.entity.shoppinglist.ShoppingListDto;
 import com.igz.entity.shoppinglist.ShoppingListManager;
 import com.igz.entity.shoppinglistitem.ShoppingListItemDto;
 import com.igz.exception.IgzException;
+import com.igz.helpers.TestHelper;
 import com.igz.test.helper.ExceptionMatcher;
-import com.igz.test.helper.TestHelper;
 
 @RunWith(value=BlockJUnit4ClassRunner.class)
 public class ShoppingListManagerTest extends TestCase {

@@ -125,6 +125,7 @@
 					<jvmFlags>
 						<jvmFlag>-Ddatastore.default_high_rep_job_policy_unapplied_job_pct=20</jvmFlag>
 					</jvmFlags>
+					<port>8888</port>
 				</configuration>
 				<dependencies>
 					<dependency>

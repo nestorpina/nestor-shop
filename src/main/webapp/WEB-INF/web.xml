@@ -5,4 +5,55 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 
+
+	<!-- GLOBAL SERVICES SERVLET -->
+	<servlet>
+		<servlet-name>Services</servlet-name>
+		<servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
+		<init-param>
+			<param-name>com.sun.jersey.config.property.packages</param-name>
+			<param-value>com.igz.service</param-value>
+		</init-param>
+		<init-param>
+			<param-name>com.sun.jersey.config.feature.DisableWADL</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<load-on-startup>2</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Services</servlet-name>
+		<url-pattern>/s/*</url-pattern>
+	</servlet-mapping>
+	
+	 <!-- CREATE APPLICATION -->
+	<servlet>
+		<servlet-name>Create</servlet-name>
+		<servlet-class>com.igz.servlet.CreateServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Create</servlet-name>
+		<url-pattern>/create</url-pattern>
+	</servlet-mapping>
+	
+  	<!-- INIT APPLICATION -->
+	<servlet>
+		<servlet-name>Initialize</servlet-name>
+		<servlet-class>com.igz.servlet.InitServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Initialize</servlet-name>
+		<url-pattern>/refresh-config</url-pattern>
+	</servlet-mapping>
+	
+		<!-- SERVICE FILTER  --> 
+	<filter>
+		<filter-name>ServiceFilter</filter-name>
+		<filter-class>com.igz.filter.ServiceFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>ServiceFilter</filter-name>
+		<url-pattern>/s/*</url-pattern>
+    </filter-mapping>
+    
 </web-app>

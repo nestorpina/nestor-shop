@@ -1,4 +1,4 @@
-package com.igz.test.helper;
+package com.igz.helpers;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -29,7 +29,11 @@ public class TestHelper {
         ObjectifyService.register(ShoppingListDto.class);
         ObjectifyService.register(ShoppingListItemDto.class);
 
-        // Test data
+        loadTestData();
+	}
+
+
+	public static void loadTestData() {
 		UserManager userM = new UserManager();
 		user = new UserDto();
 

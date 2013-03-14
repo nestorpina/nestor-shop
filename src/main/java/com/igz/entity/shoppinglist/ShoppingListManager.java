@@ -73,8 +73,9 @@ public class ShoppingListManager extends ShoppingListFactory {
 		ofy().transact(new VoidWork() {
 			@Override
 			public void vrun() {
-				Key<ShoppingListItemDto> key = Key.create(Key.create(ShoppingListDto.class, listId), ShoppingListItemDto.class, itemId);
-				ofy().delete().key(key);
+				final ShoppingListItemManager shoppingListItemM = new ShoppingListItemManager();
+				Key<ShoppingListItemDto> key = shoppingListItemM.getKey(listId, itemId);
+				shoppingListItemM.deleteByKey(key);
 			}
 		});
 	}

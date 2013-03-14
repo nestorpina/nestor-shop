@@ -14,5 +14,9 @@ public abstract class AbstractFactoryPlus<DtoType> extends AbstractFactory<DtoTy
     public DtoType getByKey(Key<DtoType> key ){
     	return ofy().load().key( key ).get();
     }
+    
+    public void deleteByKey(Key<DtoType> key ){
+    	ofy().delete().key( key ).now();
+    }
 
 }

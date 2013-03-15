@@ -53,6 +53,20 @@ public class ShoppingListManagerTest extends TestCase {
     }
 
     @Test
+    public void testGetByLongKey() {
+    	ShoppingListDto list = createAndSaveTestList();
+    	ShoppingListDto listFromDatastore = shoppingListM.getByKeyLong(list.getId());
+    	assertEquals(list, listFromDatastore);
+    }
+    
+    @Test
+    public void testGetByStringKey() {
+    	ShoppingListDto list = createAndSaveTestList();
+    	ShoppingListDto listFromDatastore = shoppingListM.getByKeyString(list.getKey().getString());
+    	assertEquals(list, listFromDatastore);
+    }    
+    
+    @Test
     public void testAddProductsInUnsavedList() throws IgzException {
     	thrown.expect(IllegalArgumentException.class);
     	

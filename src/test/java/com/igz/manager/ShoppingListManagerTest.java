@@ -53,13 +53,6 @@ public class ShoppingListManagerTest extends TestCase {
     }
 
     @Test
-    public void testGetByLongKey() {
-    	ShoppingListDto list = createAndSaveTestList();
-    	ShoppingListDto listFromDatastore = shoppingListM.getByKeyLong(list.getId());
-    	assertEquals(list, listFromDatastore);
-    }
-    
-    @Test
     public void testGetByStringKey() {
     	ShoppingListDto list = createAndSaveTestList();
     	ShoppingListDto listFromDatastore = shoppingListM.getByKeyString(list.getKey().getString());
@@ -97,7 +90,7 @@ public class ShoppingListManagerTest extends TestCase {
 				
 			}
 		});
-    	List<ShoppingListItemDto> itemList = shoppingListM.getShoppingListItems(list.getId());
+    	List<ShoppingListItemDto> itemList = shoppingListM.getShoppingListItems(list.getKey());
     	assertEquals("Item list size", 2, itemList.size());
     }
 
@@ -119,7 +112,7 @@ public class ShoppingListManagerTest extends TestCase {
     	ProductDto firstProduct = TestHelper.product1;
 		shoppingListM.addProduct(list, firstProduct);
     	
-    	List<ShoppingListItemDto> itemList = shoppingListM.getShoppingListItems(list.getId());
+    	List<ShoppingListItemDto> itemList = shoppingListM.getShoppingListItems(list.getKey());
     	assertEquals("Item list size", 2, itemList.size());
     	for (ShoppingListItemDto item : itemList) {
     		if(item.getProduct().getId().equals(firstProduct.getId())) {
@@ -146,10 +139,10 @@ public class ShoppingListManagerTest extends TestCase {
     		addedProduct = shoppingListM.addProduct(list, product);
 		}
     	
-    	shoppingListM.removeProduct(list.getId(), addedProduct.getId());
+    	shoppingListM.removeProduct(list.getKey(), addedProduct.getId());
     	
     	// Retrieve again from datastore
-    	List<ShoppingListItemDto> itemList2 = shoppingListM.getShoppingListItems(list.getId());
+    	List<ShoppingListItemDto> itemList2 = shoppingListM.getShoppingListItems(list.getKey());
     	assertEquals("Items in list after deletion", 1, itemList2.size());
     }
 
@@ -164,7 +157,7 @@ public class ShoppingListManagerTest extends TestCase {
     	thrown.expect(ExceptionMatcher.hasCode(IgzException.IGZ_SHOPPING_LIST_ITEM_NOT_FOUND));
     	
     	ShoppingListDto list = createAndSaveTestList();    	
-    	shoppingListM.setProductQuantity(list.getId(), TestHelper.product1.getId(), 20);
+    	shoppingListM.setProductQuantity(list.getKey(), TestHelper.product1.getId(), 20);
     }
     
     /**
@@ -176,7 +169,7 @@ public class ShoppingListManagerTest extends TestCase {
     	thrown.expect(IllegalArgumentException.class);
     	
     	ShoppingListDto list = createAndSaveTestList();    	
-    	shoppingListM.setProductQuantity(list.getId(), TestHelper.product1.getId(), -1);
+    	shoppingListM.setProductQuantity(list.getKey(), TestHelper.product1.getId(), -1);
     }
     
     /**
@@ -187,8 +180,8 @@ public class ShoppingListManagerTest extends TestCase {
     public void testSetQuantityOfProduct() throws IgzException {
     	ShoppingListDto list = createAndSaveTestList();
     	ShoppingListItemDto item = shoppingListM.addProduct(list, TestHelper.product1);
-    	shoppingListM.setProductQuantity(list.getId(), item.getId(), 20);
-    	List<ShoppingListItemDto> products = shoppingListM.getShoppingListItems(list.getId());
+    	shoppingListM.setProductQuantity(list.getKey(), item.getId(), 20);
+    	List<ShoppingListItemDto> products = shoppingListM.getShoppingListItems(list.getKey());
     	assertEquals("Quantity of product1 ordered", 20, products.get(0).getQuantity().intValue());
     }
     
@@ -200,8 +193,8 @@ public class ShoppingListManagerTest extends TestCase {
     public void testSetQuantityOfProductToZero() throws IgzException {
     	ShoppingListDto list = createAndSaveTestList();
     	ShoppingListItemDto item = shoppingListM.addProduct(list, TestHelper.product1);
-    	shoppingListM.setProductQuantity(list.getId(), item.getId(), 0);
-    	List<ShoppingListItemDto> products = shoppingListM.getShoppingListItems(list.getId());
+    	shoppingListM.setProductQuantity(list.getKey(), item.getId(), 0);
+    	List<ShoppingListItemDto> products = shoppingListM.getShoppingListItems(list.getKey());
     	assertEquals("Product list size should be empty", true, products.isEmpty());
     }  
     
@@ -225,7 +218,7 @@ public class ShoppingListManagerTest extends TestCase {
     	thrown.expect(ExceptionMatcher.hasCode(IgzException.IGZ_SHOPPING_LIST_ITEM_NOT_FOUND));
 
     	ShoppingListDto list = createAndSaveTestList();
-    	shoppingListM.buyProduct(list.getId(), 1L, new Date());
+    	shoppingListM.buyProduct(list.getKey(), 1L, new Date());
     }
 
     /**
@@ -238,18 +231,27 @@ public class ShoppingListManagerTest extends TestCase {
     	ShoppingListDto list = createAndSaveTestList();
     	ShoppingListItemDto item = shoppingListM.addProduct(list, TestHelper.product1);
     	Date dateBought = new Date();
-    	shoppingListM.buyProduct(list.getId(), item.getId(), dateBought);
-    	List<ShoppingListItemDto> products = shoppingListM.getShoppingListItems(list.getId());
+    	shoppingListM.buyProduct(list.getKey(), item.getId(), dateBought);
+    	List<ShoppingListItemDto> products = shoppingListM.getShoppingListItems(list.getKey());
     	assertEquals("Date bought set", dateBought, products.get(0).getDateBought());
     	
     }    
+    
+    @Test
+    public void testGetByUser() throws InterruptedException {
+    	List<ShoppingListDto> list = shoppingListM.getByUser(TestHelper.user);
+    	assertEquals("shopping lists of user", 1, list.size());
+    	createAndSaveTestList();
+    	list = shoppingListM.getByUser(TestHelper.user);
+    	assertEquals("shopping lists of user", 2, list.size());
+    }
     
 
     /* --------------- Helper methods --------------------- */
     
     private ShoppingListDto createAndSaveTestList() {
-    	ShoppingListDto list = createTestList();
-    	shoppingListM.save(list);
+    	final ShoppingListDto list = createTestList();
+		shoppingListM.save(list);
     	return list;
     }
     

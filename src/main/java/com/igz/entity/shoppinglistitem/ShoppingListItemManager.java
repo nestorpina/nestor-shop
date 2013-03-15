@@ -5,7 +5,7 @@ import com.igz.entity.shoppinglist.ShoppingListDto;
 
 public class ShoppingListItemManager extends ShoppingListItemFactory {
 
-	public Key<ShoppingListItemDto> getKey(Long listId, Long itemId) {
-		return Key.create(Key.create(ShoppingListDto.class, listId), ShoppingListItemDto.class, itemId);
+	public Key<ShoppingListItemDto> getKey(Key<ShoppingListDto> listKey, Long itemId) {
+		return Key.create(listKey, ShoppingListItemDto.class, itemId);
 	}
 }

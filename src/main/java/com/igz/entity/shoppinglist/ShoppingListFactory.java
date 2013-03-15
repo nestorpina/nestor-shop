@@ -17,12 +17,12 @@ public class ShoppingListFactory extends AbstractFactoryPlus<ShoppingListDto> {
     /**
      * Get the shopping list items associated to a list
      * 
-     * @param shoppingListId
+     * @param shoppingListKey
      * @return
      */
-    public List<ShoppingListItemDto> getShoppingListItems(Long shoppingListId) {
+    public List<ShoppingListItemDto> getShoppingListItems(Key<ShoppingListDto> shoppingListKey) {
 		return ofy().load().type(ShoppingListItemDto.class)
-				.ancestor(Key.create(ShoppingListDto.class, shoppingListId))
+				.ancestor(shoppingListKey)
 				.list();
     }
 }

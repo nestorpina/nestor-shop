@@ -11,6 +11,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
+import com.google.appengine.api.NamespaceManager;
+
 /**
  * Protects all services to be accesed without a valid user in session.
  * 
@@ -32,6 +34,7 @@ public class ServiceFilter implements Filter {
 //		HttpSession session = request.getSession();
 
 		LOGGER.info(request.getRequestURL().toString() );
+		NamespaceManager.set("intelygenz.com");
 		
 //		String namespace = (String) session.getAttribute( NextInitHelper.NAMESPACE );
 //		

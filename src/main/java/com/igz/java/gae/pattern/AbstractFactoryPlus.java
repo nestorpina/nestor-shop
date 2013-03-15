@@ -37,13 +37,4 @@ public abstract class AbstractFactoryPlus<DtoType> extends AbstractFactory<DtoTy
 		}
 	}
 	
-	public DtoType getByKeyLong(Long longKey) {
-		if( longKey == null ){
-			throw new IllegalArgumentException("key must not be null");
-		} else {
-	    	Key<DtoType> key = Key.create( DTO_CLASS, longKey.longValue() );
-	    	return getByKey( key );
-		}
-	}
-	
 }

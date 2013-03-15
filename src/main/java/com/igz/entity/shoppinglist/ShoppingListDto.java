@@ -7,6 +7,7 @@ import com.googlecode.objectify.Key;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
+import com.googlecode.objectify.annotation.Parent;
 import com.igz.entity.user.UserDto;
 
 @Entity(name="SL")
@@ -16,7 +17,7 @@ public class ShoppingListDto implements Serializable{
 	
 	@Id private Long id;
 	@Index private String name;
-	private Key<UserDto> owner;
+	@Parent private Key<UserDto> owner;
 	private Date creationDate;
 	private Boolean open;
 	public Long getId() {
@@ -24,7 +25,7 @@ public class ShoppingListDto implements Serializable{
 	}
 	
 	public Key<ShoppingListDto> getKey() {
-		return Key.create(ShoppingListDto.class, id);
+		return Key.create(owner, ShoppingListDto.class, id);
 	}
 	
 	public void setId(Long id) {

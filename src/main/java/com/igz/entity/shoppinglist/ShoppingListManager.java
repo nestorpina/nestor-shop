@@ -3,6 +3,7 @@ package com.igz.entity.shoppinglist;
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Logger;
 
 import com.googlecode.objectify.Key;
@@ -11,6 +12,7 @@ import com.googlecode.objectify.Work;
 import com.igz.entity.product.ProductDto;
 import com.igz.entity.shoppinglistitem.ShoppingListItemDto;
 import com.igz.entity.shoppinglistitem.ShoppingListItemManager;
+import com.igz.entity.user.UserDto;
 import com.igz.exception.IgzException;
 
 public class ShoppingListManager extends ShoppingListFactory {
@@ -67,15 +69,15 @@ public class ShoppingListManager extends ShoppingListFactory {
 	/**
 	 * Removes a item from the shopping list. 
 	 * 
-	 * @param listId
+	 * @param listKey
 	 * @param itemId
 	 */
-	public void removeProduct(final Long listId, final Long itemId) {
+	public void removeProduct(final Key<ShoppingListDto> listKey, final Long itemId) {
 		ofy().transact(new VoidWork() {
 			@Override
 			public void vrun() {
 				final ShoppingListItemManager shoppingListItemM = new ShoppingListItemManager();
-				Key<ShoppingListItemDto> key = shoppingListItemM.getKey(listId, itemId);
+				Key<ShoppingListItemDto> key = shoppingListItemM.getKey(listKey, itemId);
 				shoppingListItemM.deleteByKey(key);
 			}
 		});
@@ -85,26 +87,26 @@ public class ShoppingListManager extends ShoppingListFactory {
 	 * Sets the quantity of a product in the shopping list to the specified quantity.
 	 * If the quantity is set to 0, this is the same as calling removeProduct 
 	 * 
-	 * @param listId
+	 * @param listKey
 	 * @param itemId
 	 * @param quantity
 	 * @throws IgzException - IGZ_SHOPPING_LIST_ITEM_NOT_FOUND if the item doesn't exists on the list
 	 * @throws IllegalArgumentException - If any parameter is null or quantity < 0
 	 * 
 	 */
-	public void setProductQuantity(final Long listId, final Long itemId, final Integer quantity) throws IgzException {
-		if(listId == null || itemId == null || quantity == null || quantity.intValue() < 0) {
+	public void setProductQuantity(final Key<ShoppingListDto> listKey, final Long itemId, final Integer quantity) throws IgzException {
+		if(listKey == null || itemId == null || quantity == null || quantity.intValue() < 0) {
 			throw new IllegalArgumentException("parameters must not be null and quantity must be > 0");
 		}
 		// TODO : Transaction, but with exceptions?
 		final ShoppingListItemManager shoppingListItemM = new ShoppingListItemManager();
-		Key<ShoppingListItemDto> key = Key.create(Key.create(ShoppingListDto.class, listId), ShoppingListItemDto.class, itemId);
+		Key<ShoppingListItemDto> key = shoppingListItemM.getKey(listKey, itemId);
 		ShoppingListItemDto item = shoppingListItemM.getByKey(key);
 		if(item==null) {
 			throw new IgzException(IgzException.IGZ_SHOPPING_LIST_ITEM_NOT_FOUND);
 		}
 		if(quantity.intValue() == 0) {
-			removeProduct(listId, itemId);
+			removeProduct(listKey, itemId);
 		} else {
 			item.setQuantity(quantity);
 			item.setDateModified(new Date());
@@ -116,19 +118,19 @@ public class ShoppingListManager extends ShoppingListFactory {
 	/**
 	 * Buy a product from a shopping list. If the product had quantity > 1, it buys all of it
 	 * 
-	 * @param listId
+	 * @param listKey
 	 * @param itemId
 	 * @param boughtDate
 	 * 
 	 * @throws IgzException - IGZ_SHOPPING_LIST_ITEM_NOT_FOUND if the item doesn't exists on the list
 	 * @throws IllegalArgumentException - If any parameter is null
 	 */
-	public void buyProduct(Long listId, Long itemId, Date boughtDate) throws IgzException {
-		if(listId == null || itemId == null || boughtDate == null ) {
+	public void buyProduct(Key<ShoppingListDto> listKey, Long itemId, Date boughtDate) throws IgzException {
+		if(listKey == null || itemId == null || boughtDate == null ) {
 			throw new IllegalArgumentException("parameters must not be null ");
 		}
 		final ShoppingListItemManager shoppingListItemM = new ShoppingListItemManager();
-		Key<ShoppingListItemDto> key = shoppingListItemM.getKey(listId, itemId);
+		Key<ShoppingListItemDto> key = shoppingListItemM.getKey(listKey, itemId);
 		ShoppingListItemDto item = shoppingListItemM.getByKey(key);
 		if(item==null) {
 			throw new IgzException(IgzException.IGZ_SHOPPING_LIST_ITEM_NOT_FOUND);
@@ -136,5 +138,9 @@ public class ShoppingListManager extends ShoppingListFactory {
 		item.setDateBought(boughtDate);
 		item.setDateModified(new Date());
 		shoppingListItemM.save(item);		
+	}
+	
+	public List<ShoppingListDto> getByUser(UserDto user) {
+		return findByParent(user.getKey());
 	}
 }

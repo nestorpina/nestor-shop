@@ -9,6 +9,7 @@ import com.googlecode.objectify.ObjectifyService;
 import com.igz.entity.product.ProductDto;
 import com.igz.entity.product.ProductManager;
 import com.igz.entity.shoppinglist.ShoppingListDto;
+import com.igz.entity.shoppinglist.ShoppingListManager;
 import com.igz.entity.shoppinglistitem.ShoppingListItemDto;
 import com.igz.entity.user.UserDto;
 import com.igz.entity.user.UserManager;
@@ -51,18 +52,29 @@ public class TestHelper {
     	product1.setId(1L);
     	productM.save(product1);
     	
-    	product2 = new ProductDto();
-    	product2.setCreationDate(new Date());
-    	product2.setName("Rice");
-    	product2.setDescription("a pack of rice");
-    	product2.setUnitType(ProductDto.UnitType.KG);
-    	product2.setUnits(1);
-    	product2.setId(2L);
-    	productM.save(product2);
+		product2 = new ProductDto();
+		product2.setCreationDate(new Date());
+		product2.setName("Rice");
+		product2.setDescription("a pack of rice");
+		product2.setUnitType(ProductDto.UnitType.KG);
+		product2.setUnits(1);
+		product2.setId(2L);
+		productM.save(product2);
     	
     	products = new ArrayList<ProductDto>();
     	products.add(product1);
     	products.add(product2);
+    	
+    	ShoppingListManager slM = new ShoppingListManager();
+    	ShoppingListDto sl = new ShoppingListDto();
+    	sl.setCreationDate(new Date());
+    	sl.setName("my shopping list");
+    	sl.setOwner(user.getKey());
+    	slM.save( sl );
+    	
+    	slM.addProduct(sl, product1);
+    	slM.addProduct(sl, product2);
+    	
 	}
 	
 }

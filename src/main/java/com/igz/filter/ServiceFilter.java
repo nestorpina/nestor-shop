@@ -12,6 +12,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import com.google.appengine.api.NamespaceManager;
+import com.igz.entity.user.UserDto;
 
 /**
  * Protects all services to be accesed without a valid user in session.
@@ -35,6 +36,10 @@ public class ServiceFilter implements Filter {
 
 		LOGGER.info(request.getRequestURL().toString() );
 		NamespaceManager.set("intelygenz.com");
+		UserDto user = new UserDto();
+		user.setEmail("nestor.pina@intelygenz.com");
+		user.setFullname("Nestor Pina");
+		p_request.setAttribute("USER", user);
 		
 //		String namespace = (String) session.getAttribute( NextInitHelper.NAMESPACE );
 //		

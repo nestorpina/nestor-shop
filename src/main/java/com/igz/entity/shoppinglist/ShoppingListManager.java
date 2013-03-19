@@ -140,7 +140,7 @@ public class ShoppingListManager extends ShoppingListFactory {
 		shoppingListItemM.save(item);		
 	}
 	
-	public List<ShoppingListDto> getByUser(UserDto user) {
+	public List<ShoppingListDto> findByUser(UserDto user) {
 		return findByParent(user.getKey());
 	}
 }

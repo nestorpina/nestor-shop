@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.googlecode.objectify.Key;
 import com.igz.entity.shoppinglistitem.ShoppingListItemDto;
+import com.igz.entity.user.UserDto;
 import com.igz.java.gae.pattern.AbstractFactoryPlus;
 
 public class ShoppingListFactory extends AbstractFactoryPlus<ShoppingListDto> {
@@ -24,5 +25,10 @@ public class ShoppingListFactory extends AbstractFactoryPlus<ShoppingListDto> {
 		return ofy().load().type(ShoppingListItemDto.class)
 				.ancestor(shoppingListKey)
 				.list();
+    }
+    
+    public ShoppingListDto getByUserAndId(UserDto user, Long id) {
+    	Key<ShoppingListDto> key = Key.create(user.getKey(), ShoppingListDto.class, id);
+    	return getByKey(key);
     }
 }

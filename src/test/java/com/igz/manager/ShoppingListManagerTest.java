@@ -239,10 +239,10 @@ public class ShoppingListManagerTest extends TestCase {
     
     @Test
     public void testGetByUser() throws InterruptedException {
-    	List<ShoppingListDto> list = shoppingListM.getByUser(TestHelper.user);
+    	List<ShoppingListDto> list = shoppingListM.findByUser(TestHelper.user);
     	assertEquals("shopping lists of user", 1, list.size());
     	createAndSaveTestList();
-    	list = shoppingListM.getByUser(TestHelper.user);
+    	list = shoppingListM.findByUser(TestHelper.user);
     	assertEquals("shopping lists of user", 2, list.size());
     }
     

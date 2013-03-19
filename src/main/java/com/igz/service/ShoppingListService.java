@@ -17,9 +17,7 @@ import com.google.gson.Gson;
 import com.igz.entity.shoppinglist.ShoppingListDto;
 import com.igz.entity.shoppinglist.ShoppingListManager;
 import com.igz.entity.shoppinglistitem.ShoppingListItemDto;
-import com.igz.entity.shoppinglistitem.ShoppingListItemManager;
 import com.igz.entity.user.UserDto;
-import com.igz.entity.user.UserManager;
 
 /**
  * Shopping list servlet
@@ -32,15 +30,11 @@ import com.igz.entity.user.UserManager;
 @Path("/shoplist")
 public class ShoppingListService {
 
-    private static final Logger LOGGER = Logger.getLogger(ShoppingListService.class.getName());
-
-    private final UserManager userM = new UserManager();
+	private static final Logger LOGGER = Logger.getLogger(ShoppingListManager.class.getName());
     private final ShoppingListManager slM = new ShoppingListManager();
-    private final ShoppingListItemManager sliM = new ShoppingListItemManager();
-    
     
     /**
-     * Get info about user in the session.
+     * Get all the shopping lists of the user logged in the session
      * 
      * @return SC_OK
      */
@@ -49,9 +43,10 @@ public class ShoppingListService {
     @Produces("application/json;charset=UTF-8")
     public Response getAllShoppingList( @Context HttpServletRequest p_request ) {
     	
-    	UserDto user = (UserDto) p_request.getSession().getAttribute("USER");
+    	UserDto user = (UserDto) (UserDto) p_request.getAttribute("USER");
+    	LOGGER.info("/shoppinglist/all :" + user.getKey());
     	
-    	List<ShoppingListDto> list = slM.findAll();
+    	List<ShoppingListDto> list = slM.findByUser(user);
 
     	if(list == null || list.isEmpty()) {
     		return Response.noContent().build();
@@ -61,7 +56,7 @@ public class ShoppingListService {
     }    
     
     /**
-     * Get info about user in the session.
+     * Get shopping list by webSafeString id
      * 
      * @return SC_OK
      */
@@ -69,8 +64,6 @@ public class ShoppingListService {
     @Path("/{id}")
     @Produces("application/json;charset=UTF-8")
     public Response getShoppingList( @PathParam("id") String listId, @Context HttpServletRequest p_request ) {
-    	
-    	UserDto user = (UserDto) p_request.getSession().getAttribute("USER");
     	
     	ShoppingListDto sl = slM.getByKeyString(listId);
 
@@ -81,5 +74,26 @@ public class ShoppingListService {
     		return Response.ok().entity( new Gson().toJson( shoppingListItems ) ).build();
     	}
     }
+    
+    /**
+     * Get shopping list by id, where the user logged in the session is the owner
+     * 
+     * @return SC_OK
+     */
+    @GET
+    @Path("/id/{id}")
+    @Produces("application/json;charset=UTF-8")
+    public Response getShoppingList( @PathParam("id") Long listId, @Context HttpServletRequest p_request ) {
+    	
+    	UserDto user = (UserDto) p_request.getAttribute("USER");
+    	ShoppingListDto sl = slM.getByUserAndId(user, listId);
+
+    	if(sl == null) {
+    		throw new WebApplicationException(Status.NOT_FOUND);
+    	} else {
+    		List<ShoppingListItemDto> shoppingListItems = slM.getShoppingListItems(sl.getKey());
+    		return Response.ok().entity( new Gson().toJson( shoppingListItems ) ).build();
+    	}
+    }    
 
 }

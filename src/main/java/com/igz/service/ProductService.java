@@ -18,6 +18,7 @@ import com.igz.entity.product.ProductDto;
 import com.igz.entity.product.ProductManager;
 import com.igz.entity.shoppinglist.ShoppingListManager;
 import com.igz.entity.user.UserDto;
+import com.igz.exception.IgzException;
 
 /**
  * Products servlet
@@ -84,13 +85,14 @@ public class ProductService {
     @Produces("application/json;charset=UTF-8")
     public Response getProduct( @PathParam("id") Long productId, @Context HttpServletRequest p_request ) {
     	
-    	ProductDto product = productM.getByLongId(productId);
+    	ProductDto product;
+		try {
+			product = productM.getByLongId(productId);
+		} catch (IgzException e) {
+			throw new WebApplicationException(Status.NOT_FOUND);
+		}
 
-    	if(product == null) {
-    		throw new WebApplicationException(Status.NOT_FOUND);
-    	} else {
-    		return Response.ok().entity( new Gson().toJson( product ) ).build();
-    	}
+   		return Response.ok().entity( new Gson().toJson( product ) ).build();
     }    
 
 }

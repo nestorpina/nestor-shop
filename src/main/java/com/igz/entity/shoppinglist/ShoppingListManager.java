@@ -106,7 +106,7 @@ public class ShoppingListManager extends ShoppingListFactory {
 		Key<ShoppingListItemDto> key = shoppingListItemM.getKey(listKey, itemId);
 		ShoppingListItemDto item = shoppingListItemM.getByKey(key);
 		if(item==null) {
-			throw new IgzException(IgzException.IGZ_SHOPPING_LIST_ITEM_NOT_FOUND);
+			throw new IgzException(IgzException.IGZ_INVALID_SHOPPING_LIST_ITEM);
 		}
 		if(quantity.intValue() == 0) {
 			removeProduct(listKey, itemId);
@@ -136,7 +136,7 @@ public class ShoppingListManager extends ShoppingListFactory {
 		Key<ShoppingListItemDto> key = shoppingListItemM.getKey(listKey, itemId);
 		ShoppingListItemDto item = shoppingListItemM.getByKey(key);
 		if(item==null) {
-			throw new IgzException(IgzException.IGZ_SHOPPING_LIST_ITEM_NOT_FOUND);
+			throw new IgzException(IgzException.IGZ_INVALID_SHOPPING_LIST_ITEM);
 		}
 		item.setDateBought(boughtDate);
 		item.setDateModified(new Date());

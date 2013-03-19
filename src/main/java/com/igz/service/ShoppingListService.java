@@ -23,6 +23,7 @@ import com.igz.entity.shoppinglist.ShoppingListDto;
 import com.igz.entity.shoppinglist.ShoppingListManager;
 import com.igz.entity.shoppinglistitem.ShoppingListItemDto;
 import com.igz.entity.user.UserDto;
+import com.igz.exception.IgzException;
 import com.igzcode.java.util.Trace;
 
 /**
@@ -95,14 +96,15 @@ public class ShoppingListService {
     public Response getShoppingList( @PathParam("id") Long listId, @Context HttpServletRequest p_request ) {
     	
     	UserDto user = (UserDto) p_request.getAttribute("USER");
-    	ShoppingListDto sl = slM.getByUserAndId(user, listId);
+    	ShoppingListDto sl;
+		try {
+			sl = slM.getByUserAndId(user, listId);
+		} catch (IgzException e) {
+			throw new WebApplicationException(Status.NOT_FOUND);
+		} 
 
-    	if(sl == null) {
-    		throw new WebApplicationException(Status.NOT_FOUND);
-    	} else {
-    		List<ShoppingListItemDto> shoppingListItems = slM.getShoppingListItems(sl.getKey());
-    		return Response.ok().entity( new Gson().toJson( shoppingListItems ) ).build();
-    	}
+   		List<ShoppingListItemDto> shoppingListItems = slM.getShoppingListItems(sl.getKey());
+   		return Response.ok().entity( new Gson().toJson( shoppingListItems ) ).build();
     }    
 
     /**
@@ -119,14 +121,15 @@ public class ShoppingListService {
     		@Context HttpServletRequest p_request ) {
     	
     	UserDto user = (UserDto) p_request.getAttribute("USER");
-    	ProductDto product = productM.getByLongId(productId);
-    	ShoppingListDto shoppingList = slM.getByUserAndId(user, listId);
-    	try {
-    		ShoppingListItemDto item = slM.addProduct(shoppingList, product);
-    		return Response.ok().entity( new Gson().toJson( item ) ).build();
-    	} catch (IllegalArgumentException e) {
-    		return errorResponse(e);
-    	}
+    	ProductDto product;
+		try {
+			product = productM.getByLongId(productId);
+			ShoppingListDto shoppingList = slM.getByUserAndId(user, listId);
+			ShoppingListItemDto item = slM.addProduct(shoppingList, product);
+			return Response.ok().entity( new Gson().toJson( item ) ).build();
+		} catch (IgzException e) {
+			return errorResponse(e);
+		}
     }
 
 	private Response errorResponse(String msg) {
@@ -134,9 +137,9 @@ public class ShoppingListService {
 		return Response.status( HttpServletResponse.SC_BAD_REQUEST).entity( msg ).build();
 	}    
 	
-	private Response errorResponse(Exception e) {
+	private Response errorResponse(IgzException e) {
 		String error = Trace.error(e);
 		LOGGER.severe(error);
-		return Response.status( HttpServletResponse.SC_BAD_REQUEST).entity( error ).build();
+		return Response.status( HttpServletResponse.SC_BAD_REQUEST).entity( e.toJsonError() ).build();
 	}  
 }

@@ -154,7 +154,7 @@ public class ShoppingListManagerTest extends TestCase {
     @Test
     public void testSetQuantityOfNonExistantProduct() throws IgzException {
     	thrown.expect(IgzException.class);
-    	thrown.expect(ExceptionMatcher.hasCode(IgzException.IGZ_SHOPPING_LIST_ITEM_NOT_FOUND));
+    	thrown.expect(ExceptionMatcher.hasCode(IgzException.IGZ_INVALID_SHOPPING_LIST_ITEM));
     	
     	ShoppingListDto list = createAndSaveTestList();    	
     	shoppingListM.setProductQuantity(list.getKey(), TestHelper.product1.getId(), 20);
@@ -215,7 +215,7 @@ public class ShoppingListManagerTest extends TestCase {
     @Test
     public void testBuyProductNonExistant() throws IgzException {
     	thrown.expect(IgzException.class);
-    	thrown.expect(ExceptionMatcher.hasCode(IgzException.IGZ_SHOPPING_LIST_ITEM_NOT_FOUND));
+    	thrown.expect(ExceptionMatcher.hasCode(IgzException.IGZ_INVALID_SHOPPING_LIST_ITEM));
 
     	ShoppingListDto list = createAndSaveTestList();
     	shoppingListM.buyProduct(list.getKey(), 1L, new Date());

@@ -7,6 +7,7 @@ import java.util.List;
 import com.googlecode.objectify.Key;
 import com.igz.entity.shoppinglistitem.ShoppingListItemDto;
 import com.igz.entity.user.UserDto;
+import com.igz.exception.IgzException;
 import com.igz.java.gae.pattern.AbstractFactoryPlus;
 
 public class ShoppingListFactory extends AbstractFactoryPlus<ShoppingListDto> {
@@ -27,8 +28,12 @@ public class ShoppingListFactory extends AbstractFactoryPlus<ShoppingListDto> {
 				.list();
     }
     
-    public ShoppingListDto getByUserAndId(UserDto user, Long id) {
+    public ShoppingListDto getByUserAndId(UserDto user, Long id) throws IgzException {
     	Key<ShoppingListDto> key = Key.create(user.getKey(), ShoppingListDto.class, id);
-    	return getByKey(key);
+    	ShoppingListDto shoppingListDto = getByKey(key);
+    	if(shoppingListDto == null) {
+    		throw new IgzException(IgzException.IGZ_INVALID_SHOPPING_LIST);
+    	}
+    	return shoppingListDto;
     }
 }

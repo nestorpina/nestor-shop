@@ -49,6 +49,9 @@ public class ShoppingListManager extends ShoppingListFactory {
 	 * @return ShoppingListItemDto - The shoppingListItem created or incremented
 	 */
 	public ShoppingListItemDto addProduct(final ShoppingListDto shoppingList, final ProductDto product, final int quantity ) {
+		if(shoppingList == null || product == null) {
+			throw new IllegalArgumentException("Shopping List and product must not be null");
+		}
 		if(shoppingList.getId() == null) {
 			throw new IllegalArgumentException("Shopping List must have an id (saved state)");
 		}

@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -44,6 +45,8 @@ public class ShoppingListService {
     private final ProductManager productM = new ProductManager();
     
     /**
+     * GET /shoplist/all		getAllShoppingList
+     * 
      * Get all the shopping lists of the user logged in the session
      * 
      * @return SC_OK
@@ -66,6 +69,8 @@ public class ShoppingListService {
     }    
     
     /**
+     * GET /shoplist/{id}		getShoppingList(String)
+     * 
      * Get shopping list by webSafeString id
      * 
      * @return SC_OK
@@ -86,6 +91,8 @@ public class ShoppingListService {
     }
     
     /**
+     * GET /shoplist/id/{id}	getAllShoppingList(Long)
+     * 
      * Get shopping list by id, where the user logged in the session is the owner
      * 
      * @return SC_OK
@@ -108,9 +115,15 @@ public class ShoppingListService {
     }    
 
     /**
-     * Get shopping list by id, where the user logged in the session is the owner
+     * POST /shoplist/item		putItemInShoppingList(Long)
      * 
-     * @return SC_OK
+     * Put an item in the shopping list
+     * 
+     * @param listId - long id of the shopping list associated to the session user
+     * @param productId - product id
+     * @param quantity - optional, 1 by default
+     * @param p_request
+     * @return
      */
     @POST
     @Path("/item")
@@ -118,6 +131,7 @@ public class ShoppingListService {
     public Response putItemInShoppingList( 
     		@FormParam("listId") Long listId,
   			@FormParam("productId") Long productId,
+  			@DefaultValue("1") @FormParam("quantity") Long quantity,
     		@Context HttpServletRequest p_request ) {
     	
     	UserDto user = (UserDto) p_request.getAttribute("USER");
@@ -125,18 +139,13 @@ public class ShoppingListService {
 		try {
 			product = productM.getByLongId(productId);
 			ShoppingListDto shoppingList = slM.getByUserAndId(user, listId);
-			ShoppingListItemDto item = slM.addProduct(shoppingList, product);
+			ShoppingListItemDto item = slM.addProduct(shoppingList, product, quantity.intValue());
 			return Response.ok().entity( new Gson().toJson( item ) ).build();
 		} catch (IgzException e) {
 			return errorResponse(e);
 		}
     }
 
-	private Response errorResponse(String msg) {
-		LOGGER.severe(msg);
-		return Response.status( HttpServletResponse.SC_BAD_REQUEST).entity( msg ).build();
-	}    
-	
 	private Response errorResponse(IgzException e) {
 		String error = Trace.error(e);
 		LOGGER.severe(error);

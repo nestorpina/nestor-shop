@@ -6,6 +6,8 @@ import java.util.List;
 
 import com.google.appengine.api.NamespaceManager;
 import com.googlecode.objectify.ObjectifyService;
+import com.igz.entity.category.CategoryDto;
+import com.igz.entity.category.CategoryManager;
 import com.igz.entity.product.ProductDto;
 import com.igz.entity.product.ProductManager;
 import com.igz.entity.shoppinglist.ShoppingListDto;
@@ -16,8 +18,11 @@ import com.igz.entity.user.UserManager;
 
 public class TestHelper {
 
+	public static CategoryDto category1;
+	public static CategoryDto category2;
 	public static ProductDto product1;
 	public static ProductDto product2;
+	public static ProductDto product3;
 	public static List<ProductDto> products;
 	public static UserDto user;
 	
@@ -26,6 +31,7 @@ public class TestHelper {
 		NamespaceManager.set("test");
 		
         ObjectifyService.register(UserDto.class);
+        ObjectifyService.register(CategoryDto.class);
         ObjectifyService.register(ProductDto.class);
         ObjectifyService.register(ShoppingListDto.class);
         ObjectifyService.register(ShoppingListItemDto.class);
@@ -41,6 +47,19 @@ public class TestHelper {
 		user.setEmail("nestor.pina@intelygenz.com");
 		user.setFullname( "Nestor Pina" );
 		userM.save( user );
+		
+		CategoryManager categoryM = new CategoryManager();
+		category1 = new CategoryDto();
+		category1.setId(1L);
+		category1.setName("Food");
+		category1.setCreationDate(new Date());
+		categoryM.save(category1);
+		
+		category2 = new CategoryDto();
+		category2.setId(2L);
+		category2.setName("Gadgets");
+		category2.setCreationDate(new Date());
+		categoryM.save(category2);
 		
 		ProductManager productM = new ProductManager();
 		product1 = new ProductDto();
@@ -60,16 +79,27 @@ public class TestHelper {
 		product2.setUnits(1);
 		product2.setId(2L);
 		productM.save(product2);
+		
+		product3 = new ProductDto();
+		product3.setCreationDate(new Date());
+		product3.setName("Ipad");
+		product3.setDescription("latest apple ipad");
+		product3.setUnitType(ProductDto.UnitType.ITEM);
+		product3.setUnits(1);
+		product3.setId(3L);
+		productM.save(product3);		
     	
     	products = new ArrayList<ProductDto>();
     	products.add(product1);
     	products.add(product2);
+    	products.add(product3);
     	
     	ShoppingListManager slM = new ShoppingListManager();
     	ShoppingListDto sl = new ShoppingListDto();
     	sl.setCreationDate(new Date());
     	sl.setName("my shopping list");
     	sl.setOwner(user.getKey());
+    	sl.setId(1L);
     	slM.save( sl );
     	
     	slM.addProduct(sl, product1);

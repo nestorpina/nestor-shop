@@ -1,6 +1,7 @@
 package com.igz.manager;
 
 import java.util.Date;
+import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -60,6 +61,12 @@ public class ProductManagerTest extends TestCase {
     	
     	assertNotSame(p, productFromDB);
     	
+    }
+    
+    @Test
+    public void testFindAllProducts() {
+    	List<ProductDto> products = manager.findAll();
+    	assertEquals("all products", TestHelper.products.size(), products.size());
     }
     
 }

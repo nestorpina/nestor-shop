@@ -34,6 +34,7 @@ public class IgzException extends Exception {
 	public static final int IGZ_INVALID_SHOPPING_LIST_ITEM = 4001;
 	public static final int IGZ_INVALID_PRODUCT = 4002;
 	public static final int IGZ_INVALID_SHOPPING_LIST = 4003;
+	public static final int IGZ_INVALID_CATEGORY = 4004;
 	
 	
 	private static final String IGZ_UNKNOWN_EXCEPTION_CODE = "Unknown exception code received. code=";
@@ -68,6 +69,7 @@ public class IgzException extends Exception {
 	    map.put(IGZ_INVALID_SHOPPING_LIST_ITEM, "Shopping list item not found");
 	    map.put(IGZ_INVALID_SHOPPING_LIST, "Shopping list not found");
 	    map.put(IGZ_INVALID_PRODUCT, "Product not found");
+	    map.put(IGZ_INVALID_CATEGORY, "Category not found");
 	    
 	    CODE_MESSAGES = map;
 	}

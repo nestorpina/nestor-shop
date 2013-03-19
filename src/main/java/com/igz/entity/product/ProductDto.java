@@ -7,6 +7,8 @@ import com.googlecode.objectify.Key;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
+import com.googlecode.objectify.annotation.Parent;
+import com.igz.entity.category.CategoryDto;
 
 @Entity(name="p")
 public class ProductDto implements Serializable{
@@ -15,6 +17,7 @@ public class ProductDto implements Serializable{
 	
 	@Id private Long id;
 	@Index private String name;
+	@Parent private Key<CategoryDto> category;
 	private String description;
 	private String image;
 	

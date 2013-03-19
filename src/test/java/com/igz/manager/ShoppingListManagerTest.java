@@ -91,7 +91,7 @@ public class ShoppingListManagerTest extends TestCase {
 			}
 		});
     	List<ShoppingListItemDto> itemList = shoppingListM.getShoppingListItems(list.getKey());
-    	assertEquals("Item list size", 2, itemList.size());
+    	assertEquals("Item list size", TestHelper.products.size(), itemList.size());
     }
 
     /**
@@ -113,7 +113,7 @@ public class ShoppingListManagerTest extends TestCase {
 		shoppingListM.addProduct(list, firstProduct);
     	
     	List<ShoppingListItemDto> itemList = shoppingListM.getShoppingListItems(list.getKey());
-    	assertEquals("Item list size", 2, itemList.size());
+    	assertEquals("Item list size", TestHelper.products.size(), itemList.size());
     	for (ShoppingListItemDto item : itemList) {
     		if(item.getProduct().getId().equals(firstProduct.getId())) {
     			assertEquals("Quantity expected", 2, item.getQuantity().intValue());
@@ -121,7 +121,7 @@ public class ShoppingListManagerTest extends TestCase {
     			assertEquals("Quantity expected", 1, item.getQuantity().intValue());
     		}
 		}
-    	assertEquals("Item list size", 2, itemList.size());
+    	assertEquals("Item list size", TestHelper.products.size(), itemList.size());
     }
     
     /**
@@ -143,7 +143,7 @@ public class ShoppingListManagerTest extends TestCase {
     	
     	// Retrieve again from datastore
     	List<ShoppingListItemDto> itemList2 = shoppingListM.getShoppingListItems(list.getKey());
-    	assertEquals("Items in list after deletion", 1, itemList2.size());
+    	assertEquals("Items in list after deletion", TestHelper.products.size()-1 , itemList2.size());
     }
 
     
@@ -195,7 +195,7 @@ public class ShoppingListManagerTest extends TestCase {
     	ShoppingListItemDto item = shoppingListM.addProduct(list, TestHelper.product1);
     	shoppingListM.setProductQuantity(list.getKey(), item.getId(), 0);
     	List<ShoppingListItemDto> products = shoppingListM.getShoppingListItems(list.getKey());
-    	assertEquals("Product list size should be empty", true, products.isEmpty());
+    	assertTrue("Product list size should be empty", products.isEmpty());
     }  
     
     /**
@@ -238,6 +238,13 @@ public class ShoppingListManagerTest extends TestCase {
     }    
     
     @Test
+    /**
+     * We test that test user has only one list, and after we create one list
+     * it has two lists. It's transactional so it must work always even when
+     * UnappliedJobPercentage is high.
+     * 
+     * @throws IgzException
+     */
     public void testGetByUser() throws InterruptedException {
     	List<ShoppingListDto> list = shoppingListM.findByUser(TestHelper.user);
     	assertEquals("shopping lists of user", 1, list.size());

@@ -28,6 +28,8 @@
     <properties>
 		<gapi.version>1.12.0-beta</gapi.version>
  		<gae.version>1.7.3</gae.version>
+ 		<gae.port>8888</gae.port>
+ 		<gae.debug.suspend>false</gae.debug.suspend>
 	    <gae-runtime.version>1.7.3</gae-runtime.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -125,7 +127,8 @@
 					<jvmFlags>
 						<jvmFlag>-Ddatastore.default_high_rep_job_policy_unapplied_job_pct=20</jvmFlag>
 					</jvmFlags>
-					<port>8888</port>
+					<port>${gae.port}</port>
+					<debugSuspend>${gae.debug.suspend}</debugSuspend>
 				</configuration>
 				<dependencies>
 					<dependency>

@@ -1,7 +1,6 @@
-App Engine Java Application
-Copyright (C) 2010-2012 Google Inc.
+Nestor-shop Demo Application
 
-## Skeleton application for use with App Engine Java.
+## Example application for use with App Engine Java, objetify and Jersey JAX-RS, using igz-code-gae libraries 
 
 Requires [Apache Maven](http://maven.apache.org) 3.0 or greater, and JDK 6+ in order to run.
 
@@ -13,12 +12,20 @@ Building will run the tests, but to explicitly run tests you can use the test ta
 
     mvn test
 
-To start the app, use the [App Engine Maven Plugin](http://code.google.com/p/appengine-maven-plugin/) that is already included in this demo.  Just run the command.
+To start the app, use the [Maven GAE Plugin](https://github.com/maven-gae-plugin/maven-gae-plugin) that is already included in this demo.  Just run the command.
 
-    mvn appengine:devserver
+    mvn gae:run -Denv=local
+    
+By default the local server will listen in port 8080, to access aplication enter the following url in your browser : 
 
-For further information, consult the [Java App Engine](https://developers.google.com/appengine/docs/java/overview) documentation.
+http://localhost:8080
 
-To see all the available goals for the App Engine plugin, run
+To access de gae administration console enter
 
-    mvn help:describe -Dplugin=appengine
+http://localhost:8080/_ah/admin 
+
+To stop the running local instance, execute
+
+    mvn gae:stop
+    
+ 

@@ -28,7 +28,7 @@
     <properties>
 		<gapi.version>1.12.0-beta</gapi.version>
  		<gae.version>1.7.3</gae.version>
- 		<gae.port>8888</gae.port>
+ 		<gae.port>8080</gae.port>
  		<gae.debug.suspend>false</gae.debug.suspend>
 	    <gae-runtime.version>1.7.3</gae-runtime.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

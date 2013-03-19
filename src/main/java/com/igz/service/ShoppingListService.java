@@ -30,10 +30,11 @@ import com.igzcode.java.util.Trace;
 /**
  * Shopping list servlet
  * 
- * GET /shoplist/all		getAllShoppingList
- * GET /shoplist/{id}		getShoppingList(String)
- * GET /shoplist/id/{id}	getAllShoppingList(Long)
- * POST /shoplist/item		putItemInShoppingList(Long)
+ * GET /shoplist/all			getAllShoppingList
+ * GET /shoplist/{id}			getShoppingList(String)
+ * GET /shoplist/id/{id}		getAllShoppingList(Long)
+ * POST /shoplist/item			putItemInShoppingList(Long)
+ * POST /shoplist/item/remove	removeItemFromShoppingList
  * 
  *
  */
@@ -115,7 +116,7 @@ public class ShoppingListService {
     }    
 
     /**
-     * POST /shoplist/item		putItemInShoppingList(Long)
+     * POST /shoplist/item		putItemInShoppingList
      * 
      * Put an item in the shopping list
      * 
@@ -135,9 +136,9 @@ public class ShoppingListService {
     		@Context HttpServletRequest p_request ) {
     	
     	UserDto user = (UserDto) p_request.getAttribute("USER");
-    	ProductDto product;
+
 		try {
-			product = productM.getByLongId(productId);
+			ProductDto product = productM.getByLongId(productId);
 			ShoppingListDto shoppingList = slM.getByUserAndId(user, listId);
 			ShoppingListItemDto item = slM.addProduct(shoppingList, product, quantity.intValue());
 			return Response.ok().entity( new Gson().toJson( item ) ).build();
@@ -145,6 +146,34 @@ public class ShoppingListService {
 			return errorResponse(e);
 		}
     }
+    
+    /**
+     * POST /shoplist/item/remove		removeItemFromShoppingList
+     * 
+     * Remove an item from a shopping list
+     * 
+     * @param listId - long id of the shopping list associated to the session user
+     * @param itemId - item of the list to remove
+     * @param p_request
+     * @return
+     */
+    @POST
+    @Path("/item/remove")
+    @Produces("application/json;charset=UTF-8")
+    public Response removeItemFromShoppingList( 
+    		@FormParam("listId") Long listId,
+  			@FormParam("itemId") Long itemId,
+    		@Context HttpServletRequest p_request ) {
+    	
+    	UserDto user = (UserDto) p_request.getAttribute("USER");
+		try {
+			ShoppingListDto shoppingList = slM.getByUserAndId(user, listId);
+			slM.removeProduct(shoppingList.getKey(), itemId);
+			return Response.ok().build();
+		} catch (IgzException e) {
+			return errorResponse(e);
+		}
+    }    
 
 	private Response errorResponse(IgzException e) {
 		String error = Trace.error(e);

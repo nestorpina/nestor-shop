@@ -18,6 +18,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.igz.entity.product.ProductDto;
 import com.igz.entity.product.ProductManager;
 import com.igz.entity.shoppinglist.ShoppingListDto;
@@ -86,8 +87,8 @@ public class ShoppingListService {
     	if(sl == null) {
     		throw new WebApplicationException(Status.NOT_FOUND);
     	} else {
-    		List<ShoppingListItemDto> shoppingListItems = slM.getShoppingListItems(sl.getKey());
-    		return Response.ok().entity( new Gson().toJson( shoppingListItems ) ).build();
+    		String json = buildShoppingListJson(sl);
+			return Response.ok().entity( json ).build();
     	}
     }
     
@@ -111,8 +112,8 @@ public class ShoppingListService {
 			throw new WebApplicationException(Status.NOT_FOUND);
 		} 
 
-   		List<ShoppingListItemDto> shoppingListItems = slM.getShoppingListItems(sl.getKey());
-   		return Response.ok().entity( new Gson().toJson( shoppingListItems ) ).build();
+		String json = buildShoppingListJson(sl);
+   		return Response.ok().entity( json ).build();
     }    
 
     /**
@@ -180,4 +181,13 @@ public class ShoppingListService {
 		LOGGER.severe(error);
 		return Response.status( HttpServletResponse.SC_BAD_REQUEST).entity( e.toJsonError() ).build();
 	}  
+	
+	private String buildShoppingListJson(ShoppingListDto sl) {
+		List<ShoppingListItemDto> shoppingListItems = slM.getShoppingListItems(sl.getKey());
+		Gson gson = new Gson();
+		JsonObject json = new JsonObject();
+		json.add("shoplist", gson.toJsonTree(sl));
+		json.add("items", gson.toJsonTree(shoppingListItems));
+		return json.toString();
+	}	
 }

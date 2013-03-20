@@ -1,0 +1,28 @@
+<div class="container-fluid">
+  <div class="row-fluid">
+    <div class="span2">
+      <!--Sidebar content-->
+
+      Search: <input ng-model="query">
+      Sort by:
+      <select ng-model="orderProp">
+        <option value="name">Alphabetical</option>
+        <option value="category.name">Category</option>
+      </select>
+
+    </div>
+    <div class="span10">
+      <!--Body content-->
+
+      <ul class="products">
+        <li ng-repeat="product in products | filter:query | orderBy:orderProp" class="thumbnail">
+          <a href="#/products/{{product.id}}" class="thumb"><img ng-src="{{product.imageUrl}}"></a>
+          <a href="#/products/{{product.id}}">{{product.name}}</a>
+          <p>{{product.description}}</p>
+        </li>
+      </ul>
+
+    </div>
+  </div>
+</div>
+

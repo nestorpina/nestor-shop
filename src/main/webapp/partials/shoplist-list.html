@@ -1,0 +1,25 @@
+<div class="container-fluid">
+  <div class="row-fluid">
+    <div class="span2">
+      <!--Sidebar content-->
+
+      Search: <input ng-model="query">
+      Sort by:
+      <select ng-model="orderProp">
+        <option value="name">Alphabetical</option>
+        <option value="creationDate">Creation Date</option>
+      </select>
+
+    </div>
+    <div class="span10">
+      <!--Body content-->
+
+      <ul class="shoplists">
+        <li ng-repeat="shoplist in shoplists | filter:query | orderBy:orderProp" class="thumbnail">
+          <a href="#/shoplists/{{shoplist.id}}">{{shoplist.name}}</a>
+        </li>
+      </ul>
+
+    </div>
+  </div>
+</div>

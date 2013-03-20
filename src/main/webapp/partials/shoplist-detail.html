@@ -1,0 +1,12 @@
+<img ng-src="{{mainImageUrl}}" class="product">
+
+<h1>{{shoplist.shoplist.name}}</h1>
+<h4>Owner: {{ shoplist.shoplist.owner.raw.name }}</h4>
+
+<p>Creation date : {{shoplist.shoplist.creationDate}}</p>
+
+<ul class="items">
+  <li ng-repeat="item in shoplist.items">
+    {{item.product.name}} : quantity : {{item.quantity}}
+  </li>
+</ul>

@@ -14,10 +14,10 @@
     <th>Remove</th>
 <tbody>
   <tr ng-repeat="item in shoplist.items">
-  	<td><button class="btn btn-primary">Buy</button></td>
+  	<td><button class="btn btn-primary" ng-click="buyItem(item.id)">Buy</button></td>
   	<td>{{item.product.name}}</td>
   	<td>{{item.quantity}}</td>
-  	<td><button class="btn btn-link">Remove</button>
+  	<td><button class="btn btn-link"  ng-click="removeItem($index)">Remove</button>
   </tr>
 </tbody>    
 </table>

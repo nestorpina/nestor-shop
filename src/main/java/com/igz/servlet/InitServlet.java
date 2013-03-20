@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.appengine.api.NamespaceManager;
 import com.googlecode.objectify.ObjectifyService;
+import com.igz.entity.category.CategoryDto;
 import com.igz.entity.product.ProductDto;
 import com.igz.entity.shoppinglist.ShoppingListDto;
 import com.igz.entity.shoppinglistitem.ShoppingListItemDto;
@@ -31,6 +32,7 @@ public class InitServlet extends HttpServlet {
 		
     	ObjectifyService.register(ConfigurationDto.class);
         ObjectifyService.register(UserDto.class);
+        ObjectifyService.register(CategoryDto.class);
         ObjectifyService.register(ProductDto.class);
         ObjectifyService.register(ShoppingListDto.class);
         ObjectifyService.register(ShoppingListItemDto.class);

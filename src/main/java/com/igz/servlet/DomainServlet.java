@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.appengine.api.NamespaceManager;
+import com.igz.entity.category.CategoryManager;
 import com.igz.entity.product.ProductManager;
 import com.igz.entity.shoppinglist.ShoppingListManager;
 import com.igz.entity.shoppinglistitem.ShoppingListItemManager;
@@ -91,6 +92,8 @@ public class DomainServlet  extends HttpServlet{
 		
 		UserManager userM = new UserManager();
 		userM.deleteAll();
+		CategoryManager categoryM = new CategoryManager();
+		categoryM.deleteAll();
 		ProductManager productM = new ProductManager();
 		productM.deleteAll();
 		ShoppingListItemManager sliM = new ShoppingListItemManager();

@@ -24,7 +24,9 @@ function ProductDetailCtrl($scope, $routeParams, $http) {
 
 function ShopListsCtrl($scope, $http) {
 	$http.get('/s/shoplist/all').success(function(data) {
+		if(!data) data = [];
 		$scope.shoplists = data;
+		
 	});
 	
    $scope.deleteSL = function(index) {

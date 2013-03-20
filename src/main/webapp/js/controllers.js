@@ -9,10 +9,7 @@ function ProductListCtrl($scope, $http) {
 
 	$scope.addProduct = function(productId) {
 		$http.post('/s/shoplist/item/',{listId : 1, productId : productId}).success(function(data) {
-
 		});
-
-	    
 	};
 	
 	$scope.orderProp = 'name';
@@ -29,6 +26,32 @@ function ShopListsCtrl($scope, $http) {
 	$http.get('/s/shoplist/all').success(function(data) {
 		$scope.shoplists = data;
 	});
+	
+   $scope.deleteSL = function(index) {
+	   	var shoplist = $scope.shoplists[index];
+		$http.delete('/s/shoplist/'+shoplist.id).success(function(data) {
+			$scope.shoplists.splice(index,1);
+		});
+
+    };
+    
+    
+    $scope.newSL = function() {
+        $scope.newFormEnabled = true;
+    };
+    
+    $scope.addSL = function() {
+    	$http.post('/s/shoplist',{name : $scope.name}).success(function(data) {
+            $scope.shoplists.push(data);
+		});
+        
+        $scope.cancelAdd();
+    };
+    
+    $scope.cancelAdd = function() {
+        $scope.name = '';
+        $scope.newFormEnabled = false;
+    };	
 
 	$scope.orderProp = 'name';
 }
@@ -40,10 +63,6 @@ function ShopListDetailCtrl($scope, $routeParams, $http) {
 	});
 	
 	$scope.buyItem = function(itemId) {
-//		$http.post('/s/shoplist/id/' + $routeParams.shoplistId).success(function(data) {
-//			$scope.shoplist = data;
-//		});
-		
 	    alert("buy item " + itemId);
 	};
 	

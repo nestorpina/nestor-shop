@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -39,6 +40,8 @@ import flexjson.transformer.DateTransformer;
  * GET /shoplist/all			getAllShoppingList
  * GET /shoplist/{id}			getShoppingList(String)
  * GET /shoplist/id/{id}		getAllShoppingList(Long)
+ * POST /shoplist/				addShoppingList()
+ * DELETE /shoplist/{id}		removeShoppingList
  * POST /shoplist/item			putItemInShoppingList(Long)
  * POST /shoplist/item/remove	removeItemFromShoppingList
  * 
@@ -181,6 +184,64 @@ public class ShoppingListService {
 		}
     }    
 
+    /**
+     * POST /shoplist/		addShoppingList
+     * 
+     * Create a new shopping list
+     * TODO: Esto lo considera un resource al ser raiz...
+     * 
+     * @param name - name of the list to create
+     * @param p_request
+     * @return
+     */
+    @POST
+    @Path("/")
+    @Produces("application/json;charset=UTF-8")
+    public Response addShoppingList( 
+    		@FormParam("name") String name,
+    		@Context HttpServletRequest p_request ) {
+    	
+    	UserDto user = (UserDto) p_request.getAttribute("USER");
+		ShoppingListDto shoplist = new ShoppingListDto();
+		shoplist.setName(name);
+		shoplist.setCreationDate(new Date());
+		shoplist.setOwner(user.getKey());
+		slM.save(shoplist);
+		return Response.ok().entity( new Gson().toJson( shoplist ) ).build();
+    }    
+    
+    /**
+     * DELETE /shoplist/{id}		removeShoppingList
+     * 
+     * Remove an shopping list
+     * TODO: Cascade delete
+     * 
+     * @param name - name of the list to create
+     * @param p_request
+     * @return
+     */
+    @DELETE
+    @Path("/{id}")
+    @Produces("application/json;charset=UTF-8")
+    public Response removeShoppingList( 
+    		@PathParam("id") Long id,
+    		@Context HttpServletRequest p_request ) {
+
+    	UserDto user = (UserDto) p_request.getAttribute("USER");
+    	LOGGER.info(String.format("User [%s] deleted list with id:%d", user.getEmail(), id));
+    	ShoppingListDto shoplist;
+		try {
+			shoplist = slM.getByUserAndId(user, id);
+		} catch (IgzException e) {
+			return errorResponse(e);
+		}
+    	if(shoplist!=null) {
+    		slM.deleteByKey(shoplist.getKey());
+    	}
+		return Response.ok().entity( new Gson().toJson( shoplist ) ).build();
+    }        
+
+    
 	private Response errorResponse(IgzException e) {
 		String error = Trace.error(e);
 		LOGGER.severe(error);

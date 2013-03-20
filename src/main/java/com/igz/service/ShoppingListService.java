@@ -1,6 +1,9 @@
 package com.igz.service;
 
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,7 +21,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.igz.entity.product.ProductDto;
 import com.igz.entity.product.ProductManager;
 import com.igz.entity.shoppinglist.ShoppingListDto;
@@ -27,6 +29,9 @@ import com.igz.entity.shoppinglistitem.ShoppingListItemDto;
 import com.igz.entity.user.UserDto;
 import com.igz.exception.IgzException;
 import com.igzcode.java.util.Trace;
+
+import flexjson.JSONSerializer;
+import flexjson.transformer.DateTransformer;
 
 /**
  * Shopping list servlet
@@ -184,10 +189,9 @@ public class ShoppingListService {
 	
 	private String buildShoppingListJson(ShoppingListDto sl) {
 		List<ShoppingListItemDto> shoppingListItems = slM.getShoppingListItems(sl.getKey());
-		Gson gson = new Gson();
-		JsonObject json = new JsonObject();
-		json.add("shoplist", gson.toJsonTree(sl));
-		json.add("items", gson.toJsonTree(shoppingListItems));
-		return json.toString();
+		Map<String,Object> result = new HashMap<String,Object>();
+		result.put("shoplist", sl);
+		result.put("items", shoppingListItems);
+		return new JSONSerializer().exclude("*.class","*.raw","*.root").transform(new DateTransformer("dd/MM/yyyy HH:mm:ss"), Date.class).deepSerialize(result);
 	}	
 }

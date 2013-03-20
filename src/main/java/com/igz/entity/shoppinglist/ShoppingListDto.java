@@ -106,7 +106,4 @@ public class ShoppingListDto implements Serializable{
 		return true;
 	} 
 	
-	
-
-	
 }

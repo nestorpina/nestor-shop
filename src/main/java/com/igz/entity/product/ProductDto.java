@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.googlecode.objectify.Key;
-import com.googlecode.objectify.Ref;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
@@ -19,7 +18,7 @@ public class ProductDto implements Serializable{
 	
 	@Id private Long id;
 	@Index private String name;
-	@Index @Load private Ref<CategoryDto> category;
+	@Index @Load private CategoryDto category;
 	private String description;
 	private String image;
 	
@@ -152,12 +151,11 @@ public class ProductDto implements Serializable{
 	}
 
 	public CategoryDto getCategory() {
-		return category.get();
+		return category;
 	}
 
 	public void setCategory(CategoryDto category) {
-		this.category = Ref.create(category.getKey(), category);
+		this.category = category;
 	}
-
 
 }

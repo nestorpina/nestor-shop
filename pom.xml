@@ -77,7 +77,15 @@
 			<groupId>com.google.http-client</groupId>
 			<artifactId>google-http-client-gson</artifactId>
 			<version>${gapi.version}</version>
-		</dependency>        
+		</dependency>
+
+		<!-- JSON Serialization (we use this instead of Json in order to use Ref objetify fields directly) -->
+		<!-- with gson it is not possible because it only serializes using attributes and not getters/setters -->
+		<dependency>
+			<groupId>net.sf.flexjson</groupId>
+			<artifactId>flexjson</artifactId>
+			<version>3.0</version>
+		</dependency>     
 		
 		<!-- TESTING -->
 		<dependency>

@@ -3,6 +3,7 @@ package com.igz.entity.category;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.googlecode.objectify.Key;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
@@ -18,6 +19,10 @@ public class CategoryDto implements Serializable{
 
 	private Date creationDate;
 
+	public Key<CategoryDto> getKey() {
+		return Key.create(CategoryDto.class, id);
+	}
+	
 	public Long getId() {
 		return id;
 	}

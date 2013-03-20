@@ -2,6 +2,8 @@ package com.igz.java.gae.pattern;
 
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
+import java.util.List;
+
 import com.googlecode.objectify.Key;
 import com.igzcode.java.gae.pattern.AbstractFactory;
 import com.igzcode.java.util.StringUtil;
@@ -37,4 +39,8 @@ public abstract class AbstractFactoryPlus<DtoType> extends AbstractFactory<DtoTy
 		}
 	}
 	
+	public List<DtoType> findByParent(Key<?> p_parent) {
+		return ofy().load().type(DTO_CLASS).ancestor( p_parent ).list();
+	}
+
 }

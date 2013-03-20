@@ -69,6 +69,7 @@ public class TestHelper {
     	product1.setUnitType(ProductDto.UnitType.ITEM);
     	product1.setUnits(6);
     	product1.setId(1L);
+    	product1.setCategory(category1);
     	productM.save(product1);
     	
 		product2 = new ProductDto();
@@ -78,6 +79,7 @@ public class TestHelper {
 		product2.setUnitType(ProductDto.UnitType.KG);
 		product2.setUnits(1);
 		product2.setId(2L);
+		product2.setCategory(category1);
 		productM.save(product2);
 		
 		product3 = new ProductDto();
@@ -87,6 +89,7 @@ public class TestHelper {
 		product3.setUnitType(ProductDto.UnitType.ITEM);
 		product3.setUnits(1);
 		product3.setId(3L);
+		product3.setCategory(category2);
 		productM.save(product3);		
     	
     	products = new ArrayList<ProductDto>();

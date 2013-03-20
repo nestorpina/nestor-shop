@@ -23,9 +23,10 @@ import com.igz.entity.shoppinglist.ShoppingListDto;
 public class ShoppingListItemDto implements Serializable{
 
 	private static final long serialVersionUID = 1L;
+	public static final String PRODUCT = "product";
 	
 	@Id private Long id;
-	@Load private Ref<ProductDto> product;
+	@Load @Index private Ref<ProductDto> product;
 	@Parent private Key<ShoppingListDto> shoppingListKey;
 	@Index private Date dateAdded;
 	private Date dateModified;

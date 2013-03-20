@@ -95,7 +95,7 @@ public class ShoppingListManagerTest extends TestCase {
     }
 
     /**
-     * We add two products, and one of the previous products again, we check
+     * We add all products, and one of the previous products again, we check
      * - the shopping list size
      * - the quantity of each item ordered 
      * 
@@ -106,16 +106,17 @@ public class ShoppingListManagerTest extends TestCase {
     	
     	ShoppingListDto list = createAndSaveTestList();
 
+    	// Add all products
     	for (ProductDto product : TestHelper.products) {
     		shoppingListM.addProduct(list, product);
 		}
-    	ProductDto firstProduct = TestHelper.product1;
-		shoppingListM.addProduct(list, firstProduct);
+    	// Add again the first product
+    	shoppingListM.addProduct(list, TestHelper.product1);
     	
     	List<ShoppingListItemDto> itemList = shoppingListM.getShoppingListItems(list.getKey());
     	assertEquals("Item list size", TestHelper.products.size(), itemList.size());
     	for (ShoppingListItemDto item : itemList) {
-    		if(item.getProduct().getId().equals(firstProduct.getId())) {
+    		if(item.getProduct().getId().equals(TestHelper.product1.getId())) {
     			assertEquals("Quantity expected", 2, item.getQuantity().intValue());
     		} else {
     			assertEquals("Quantity expected", 1, item.getQuantity().intValue());

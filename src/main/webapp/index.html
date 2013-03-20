@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" ng-app>
+<head>
+<title>Nestor-shop Demo App</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Bootstrap -->
+<link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+</head>
+<body ng-controller="ProductListCtrl">
+	<script src="js/jquery1.9.0.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/angular/angular.js"></script>
+	<script src="js/angular/angular-resource.js"></script>
+	<script src="js/controllers.js"></script>
+	
+	<script type="text/javascript">
+	$(document).ready(function() {
+		$.ajax({
+			  url: "/s/shoplist/all",
+			}).done(function(result) {
+			  console.log(result);
+			});
+	});
+	</script>
+
+  <div class="container-fluid">
+    <div class="row-fluid">
+      <div class="span2">
+        <!--Sidebar content-->
+
+        Search: <input ng-model="query">
+        Sort by:
+        <select ng-model="orderProp">
+          <option value="name">Alphabetical</option>
+        </select>
+
+      </div>
+      <div class="span10">
+        <!--Body content-->
+
+        <ul class="products">
+          <li ng-repeat="product in products | filter:query | orderBy:orderProp">
+            {{product.name}}
+            <p>{{product.description}}</p>
+          </li>
+        </ul>
+
+      </div>
+    </div>
+  </div>
+	
+	
+</body>
+</html>

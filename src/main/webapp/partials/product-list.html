@@ -11,18 +11,24 @@
       </select>
 
     </div>
-    <div class="span10">
-      <!--Body content-->
 
-      <ul class="products">
-        <li ng-repeat="product in products | filter:query | orderBy:orderProp" class="thumbnail">
-          <a href="#/products/{{product.id}}" class="thumb"><img ng-src="{{product.imageUrl}}"></a>
-          <a href="#/products/{{product.id}}">{{product.name}}</a>
-          <p>{{product.description}}</p>
-        </li>
-      </ul>
+      
+<table class="table table-striped">
+<thead>
+  <tr>
+    <th>Product Name</th>
+    <th>Add to cart</th>
+<tbody>
+  <tr ng-repeat="product in products | filter:query | orderBy:orderProp"">
+  	<td> 
+  		<dt><a href="#/products/{{product.id}}">{{product.name}}</a> </dt>
+  		<dd>{{product.description}}</dd>	
+  	</td>
+  	<td><button class="btn btn-primary">Add</button></td>
+  </tr>
+</tbody>    
+</table>      
 
-    </div>
   </div>
 </div>
 

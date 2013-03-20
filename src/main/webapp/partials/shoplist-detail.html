@@ -5,8 +5,19 @@
 
 <p>Creation date : {{shoplist.shoplist.creationDate}}</p>
 
-<ul class="items">
-  <li ng-repeat="item in shoplist.items">
-    {{item.product.name}} : quantity : {{item.quantity}}
-  </li>
-</ul>
+<table class="table table-striped">
+<thead>
+  <tr>
+    <th>Buy</th>
+    <th>Product</th>
+    <th>Quantity</th>
+    <th>Remove</th>
+<tbody>
+  <tr ng-repeat="item in shoplist.items">
+  	<td><button class="btn btn-primary">Buy</button></td>
+  	<td>{{item.product.name}}</td>
+  	<td>{{item.quantity}}</td>
+  	<td><button class="btn btn-link">Remove</button>
+  </tr>
+</tbody>    
+</table>

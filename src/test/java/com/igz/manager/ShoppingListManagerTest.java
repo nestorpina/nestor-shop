@@ -71,6 +71,7 @@ public class ShoppingListManagerTest extends TestCase {
 
     /** 
      * We add two products, and test the shopping list size afterwards
+     * and that the list item counters are updated successfully
      * 
      * @throws IgzException
      */
@@ -92,6 +93,11 @@ public class ShoppingListManagerTest extends TestCase {
 				
 			}
 		});
+    	ShoppingListDto listFromDatastore = shoppingListM.getByKey(list.getKey());
+    	assertEquals("Items total", TestHelper.products.size(), listFromDatastore.getItemsTotal().intValue());
+    	assertEquals("Items Distinct", TestHelper.products.size(), listFromDatastore.getItemsDistinct().intValue());
+    	assertEquals("Items Bought", 0, listFromDatastore.getItemsBought().intValue());
+
     	List<ShoppingListItemDto> itemList = shoppingListM.getShoppingListItems(list.getKey());
     	assertEquals("Item list size", TestHelper.products.size(), itemList.size());
     }
@@ -100,6 +106,7 @@ public class ShoppingListManagerTest extends TestCase {
      * We add all products, and one of the previous products again, we check
      * - the shopping list size
      * - the quantity of each item ordered 
+     * - that the list item counters are updated successfully
      * 
      * @throws IgzException
      */
@@ -125,10 +132,17 @@ public class ShoppingListManagerTest extends TestCase {
     		}
 		}
     	assertEquals("Item list size", TestHelper.products.size(), itemList.size());
+    	
+    	ShoppingListDto listFromDatastore = shoppingListM.getByKey(list.getKey());
+    	assertEquals("Items total", TestHelper.products.size()+1, listFromDatastore.getItemsTotal().intValue());
+    	assertEquals("Items Distinct", TestHelper.products.size(), listFromDatastore.getItemsDistinct().intValue());
+    	assertEquals("Items Bought", 0, listFromDatastore.getItemsBought().intValue());
+    	
     }
     
     /**
      * We add two products, delete one and test the shopping list size afterwards
+     * and that the list item counters are updated successfully
      * 
      * @throws IgzException
      */    
@@ -147,6 +161,12 @@ public class ShoppingListManagerTest extends TestCase {
     	// Retrieve again from datastore
     	List<ShoppingListItemDto> itemList2 = shoppingListM.getShoppingListItems(list.getKey());
     	assertEquals("Items in list after deletion", TestHelper.products.size()-1 , itemList2.size());
+
+    	ShoppingListDto listFromDatastore = shoppingListM.getByKey(list.getKey());
+    	assertEquals("Items total", TestHelper.products.size()-1, listFromDatastore.getItemsTotal().intValue());
+    	assertEquals("Items Distinct", TestHelper.products.size()-1, listFromDatastore.getItemsDistinct().intValue());
+    	assertEquals("Items Bought", 0, listFromDatastore.getItemsBought().intValue());
+
     }
 
     
@@ -177,6 +197,7 @@ public class ShoppingListManagerTest extends TestCase {
     
     /**
      * We try to set the quantity of an item order, and we test the quantity was changed
+     * and that the list item counters are updated successfully
      * @throws IgzException 
      */
     @Test
@@ -186,10 +207,16 @@ public class ShoppingListManagerTest extends TestCase {
     	shoppingListM.setProductQuantity(list.getKey(), item.getId(), 20);
     	List<ShoppingListItemDto> products = shoppingListM.getShoppingListItems(list.getKey());
     	assertEquals("Quantity of product1 ordered", 20, products.get(0).getQuantity().intValue());
+    	
+    	ShoppingListDto listFromDatastore = shoppingListM.getByKey(list.getKey());
+    	assertEquals("Items total", 20, listFromDatastore.getItemsTotal().intValue());
+    	assertEquals("Items Distinct", 1, listFromDatastore.getItemsDistinct().intValue());
+    	assertEquals("Items Bought", 0, listFromDatastore.getItemsBought().intValue());    	
     }
     
     /**
      * We try to set the quantity of an item order to 0, and we test that the item is removed
+     * and that the list item counters are updated successfully
      * @throws IgzException 
      */
     @Test
@@ -199,6 +226,12 @@ public class ShoppingListManagerTest extends TestCase {
     	shoppingListM.setProductQuantity(list.getKey(), item.getId(), 0);
     	List<ShoppingListItemDto> products = shoppingListM.getShoppingListItems(list.getKey());
     	assertTrue("Product list size should be empty", products.isEmpty());
+    	
+    	ShoppingListDto listFromDatastore = shoppingListM.getByKey(list.getKey());
+    	assertEquals("Items total", 0, listFromDatastore.getItemsTotal().intValue());
+    	assertEquals("Items Distinct", 0, listFromDatastore.getItemsDistinct().intValue());
+    	assertEquals("Items Bought", 0, listFromDatastore.getItemsBought().intValue());
+    	
     }  
     
     /**
@@ -222,10 +255,13 @@ public class ShoppingListManagerTest extends TestCase {
 
     	ShoppingListDto list = createAndSaveTestList();
     	shoppingListM.buyProduct(list.getKey(), 1L, new Date());
+    	
     }
 
     /**
      * We try to buy a product, and we test the date was added successfully
+     * and that the list item counters are updated successfully
+     * 
      * @throws IgzException
      */
     @Test
@@ -237,6 +273,12 @@ public class ShoppingListManagerTest extends TestCase {
     	shoppingListM.buyProduct(list.getKey(), item.getId(), dateBought);
     	List<ShoppingListItemDto> products = shoppingListM.getShoppingListItems(list.getKey());
     	assertEquals("Date bought set", dateBought, products.get(0).getDateBought());
+    	assertTrue("bought set", products.get(0).isBought());
+    	
+    	ShoppingListDto listFromDatastore = shoppingListM.getByKey(list.getKey());
+    	assertEquals("Items total", 1, listFromDatastore.getItemsTotal().intValue());
+    	assertEquals("Items Distinct", 1, listFromDatastore.getItemsDistinct().intValue());
+    	assertEquals("Items Bought", 1, listFromDatastore.getItemsBought().intValue());
     	
     }    
     

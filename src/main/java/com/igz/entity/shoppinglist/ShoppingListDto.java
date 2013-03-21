@@ -20,6 +20,21 @@ public class ShoppingListDto implements Serializable{
 	@Parent private Key<UserDto> owner;
 	private Date creationDate;
 	private Boolean open;
+	private Integer itemsTotal;
+	private Integer ItemsBought;
+	private Integer itemsDistinct;
+
+	
+	public ShoppingListDto() {
+		super();
+		creationDate = new Date();
+		open = Boolean.TRUE;
+		itemsTotal = 0;
+		ItemsBought = 0;
+		itemsDistinct = 0;
+		
+	}
+
 	public Long getId() {
 		return id;
 	}
@@ -104,6 +119,30 @@ public class ShoppingListDto implements Serializable{
 		} else if (!owner.equals(other.owner))
 			return false;
 		return true;
+	}
+
+	public Integer getItemsTotal() {
+		return itemsTotal;
+	}
+
+	public void setItemsTotal(Integer itemsTotal) {
+		this.itemsTotal = itemsTotal;
+	}
+
+	public Integer getItemsDistinct() {
+		return itemsDistinct;
+	}
+
+	public void setItemsDistinct(Integer itemsDistinct) {
+		this.itemsDistinct = itemsDistinct;
+	}
+
+	public Integer getItemsBought() {
+		return ItemsBought;
+	}
+
+	public void setItemsBought(Integer itemsBought) {
+		ItemsBought = itemsBought;
 	} 
 	
 }

@@ -17,8 +17,15 @@ public class ShoppingListItemFactory extends
 		super(ShoppingListItemDto.class);
 	}
 	
-	public ShoppingListItemDto put(Key<ShoppingListDto> shoppingListKey,
-			ProductDto product, int quantity) {
+	/**
+	 * Adds a new product to the shopping list
+	 * 
+	 * @param shoppingListKey
+	 * @param product
+	 * @param quantity
+	 * @return The item order with the correct quantity ordered set.
+	 */
+	public ShoppingListItemDto createOrder(Key<ShoppingListDto> shoppingListKey, ProductDto product, int quantity) {
 		ShoppingListItemDto item = new ShoppingListItemDto();
 		item.setDateAdded(new Date());
 		item.setProduct(product);
@@ -29,44 +36,38 @@ public class ShoppingListItemFactory extends
 	}
 	
 	/**
-	 * Adds a product to the shopping list, checking if it already exists in the list. 
-	 * In that case it will increment the quantity of the ordered product.
+	 * Updates a order on the shopping list incrementing the quantity of the ordered product.
 	 * 
-	 * @param shoppingListKey
-	 * @param product
+	 * @param item
 	 * @param quantity
 	 * @return The item order with the correct quantity ordered set.
 	 */
-	public ShoppingListItemDto createOrder(Key<ShoppingListDto> shoppingListKey,
-			ProductDto product, int quantity) {
-		// Check if the item is already on the order list
-		List<ShoppingListItemDto> items = findProductInShoppingList(shoppingListKey, product);
-		for (ShoppingListItemDto item : items) {
-			if(item.getProduct().getKey().equals(product.getKey())) {
-				item.setQuantity(item.getQuantity() + quantity);
-				save (item);
-				return item;
-			}
-		}
-		return put(shoppingListKey, product, quantity);
+	public ShoppingListItemDto updateOrder(ShoppingListItemDto item, int quantity) {
+		item.setQuantity(item.getQuantity() + quantity);
+		save (item);
+		return item;
 	}
 
 	/**
-	 * Search a shopping list for a product, and if it exists, returns the shopping list items
+	 * Search a shopping list for a product, and if it exists, returns the shopping list item
 	 * that matches that query
 	 * 
 	 * @param shoppingListKey
 	 * @param product
 	 * @return
 	 */
-	private List<ShoppingListItemDto> findProductInShoppingList(
+	public ShoppingListItemDto findProductInShoppingList(
 			Key<ShoppingListDto> shoppingListKey, ProductDto product) {
 		List<ShoppingListItemDto> items = ofy().load()
 				.type(ShoppingListItemDto.class)
 				.ancestor(shoppingListKey)
 				.filter(ShoppingListItemDto.PRODUCT, product)
 				.list();
-		return items;
+		if(items!=null && !items.isEmpty()) {
+			return items.get(0);
+		} else {
+			return null;
+		}
 	}
 	
 	

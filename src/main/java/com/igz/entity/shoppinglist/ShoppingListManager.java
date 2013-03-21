@@ -62,15 +62,24 @@ public class ShoppingListManager extends ShoppingListFactory {
 			@Override
 			public ShoppingListItemDto run() {
 				final ShoppingListItemManager shoppingListItemM = new ShoppingListItemManager();
-				ShoppingListItemDto shoppingListItem = shoppingListItemM.createOrder(shoppingList.getKey(), product, quantity);
+				ShoppingListItemDto item = shoppingListItemM.findProductInShoppingList(shoppingList.getKey(), product);
+				if(item != null) {
+					item = shoppingListItemM.updateOrder(item, quantity);
+				} else {
+					item = shoppingListItemM.createOrder(shoppingList.getKey(), product, quantity);
+					shoppingList.setItemsDistinct(shoppingList.getItemsDistinct()+1);
+					
+				}
+				shoppingList.setItemsTotal(shoppingList.getItemsTotal()+quantity);
+				
 				save (shoppingList);
-				return shoppingListItem;
+				return item;
 			}
 		});
 	}
 
 	/**
-	 * Removes a item from the shopping list. 
+	 * Removes a item from the shopping list updating the quantity counters on the parent list 
 	 * 
 	 * @param listKey
 	 * @param itemId
@@ -79,9 +88,23 @@ public class ShoppingListManager extends ShoppingListFactory {
 		ofy().transact(new VoidWork() {
 			@Override
 			public void vrun() {
+				// Get objects from datastore
+				ShoppingListDto list = getByKey(listKey);
 				final ShoppingListItemManager shoppingListItemM = new ShoppingListItemManager();
 				Key<ShoppingListItemDto> key = shoppingListItemM.getKey(listKey, itemId);
+				ShoppingListItemDto item = shoppingListItemM.getByKey(key);
+
+				// update counters 
+				list.setItemsDistinct(list.getItemsDistinct()-1);
+				list.setItemsTotal(list.getItemsTotal()-item.getQuantity());
+				if(item.isBought()) {
+					list.setItemsBought(list.getItemsBought()-item.getQuantity());
+				}
+				
+				// persist changes
 				shoppingListItemM.deleteByKey(key);
+				save(list);
+				
 			}
 		});
 	}
@@ -102,18 +125,32 @@ public class ShoppingListManager extends ShoppingListFactory {
 			throw new IllegalArgumentException("parameters must not be null and quantity must be > 0");
 		}
 		// TODO : Transaction, but with exceptions?
+		// Get objects from datastore
+		ShoppingListDto list = getByKey(listKey);
 		final ShoppingListItemManager shoppingListItemM = new ShoppingListItemManager();
 		Key<ShoppingListItemDto> key = shoppingListItemM.getKey(listKey, itemId);
 		ShoppingListItemDto item = shoppingListItemM.getByKey(key);
+		
 		if(item==null) {
 			throw new IgzException(IgzException.IGZ_INVALID_SHOPPING_LIST_ITEM);
 		}
+		
 		if(quantity.intValue() == 0) {
 			removeProduct(listKey, itemId);
 		} else {
+			// update counters
+			int quantityChanged = quantity - item.getQuantity();
+			list.setItemsTotal(list.getItemsTotal()+quantityChanged);
+			if(item.isBought()) {
+				list.setItemsBought(list.getItemsBought()+quantityChanged);
+			}
+			save(list);
+
+			// update item quantity
 			item.setQuantity(quantity);
 			item.setDateModified(new Date());
 			shoppingListItemM.save(item);
+			
 		}
 		
 	}
@@ -132,15 +169,25 @@ public class ShoppingListManager extends ShoppingListFactory {
 		if(listKey == null || itemId == null || boughtDate == null ) {
 			throw new IllegalArgumentException("parameters must not be null ");
 		}
+		// Get objects from datastore
+		ShoppingListDto list = getByKey(listKey);
 		final ShoppingListItemManager shoppingListItemM = new ShoppingListItemManager();
 		Key<ShoppingListItemDto> key = shoppingListItemM.getKey(listKey, itemId);
 		ShoppingListItemDto item = shoppingListItemM.getByKey(key);
+		
 		if(item==null) {
 			throw new IgzException(IgzException.IGZ_INVALID_SHOPPING_LIST_ITEM);
 		}
 		item.setDateBought(boughtDate);
+		item.setBought(Boolean.TRUE);
 		item.setDateModified(new Date());
-		shoppingListItemM.save(item);		
+		shoppingListItemM.save(item);	
+		
+		// update counters
+		list.setItemsBought(list.getItemsBought()+item.getQuantity());
+		save(list);
+		
+		
 	}
 	
 	public List<ShoppingListDto> findByUser(UserDto user) {

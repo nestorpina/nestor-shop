@@ -31,7 +31,15 @@ public class ShoppingListItemDto implements Serializable{
 	private Date dateModified;
 	@Index private Date dateBought;
 	private Integer quantity;
+	private Boolean bought;
 	
+	
+	public ShoppingListItemDto() {
+		super();
+		quantity = 0;
+		bought = Boolean.FALSE;
+		dateAdded = new Date();
+	}
 	public Key<ShoppingListItemDto> getKey() {
 		return Key.create(ShoppingListItemDto.class, id);
 	}
@@ -136,6 +144,12 @@ public class ShoppingListItemDto implements Serializable{
 	}
 	public void setProduct(ProductDto product) {
 		this.product = product;
+	}
+	public Boolean isBought() {
+		return bought;
+	}
+	public void setBought(Boolean bought) {
+		this.bought = bought;
 	}
 
 }

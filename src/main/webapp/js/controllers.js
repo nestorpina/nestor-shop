@@ -14,7 +14,7 @@ function ProductListCtrl($scope, $http) {
 
 	$scope.addProduct = function(productId) {
 		if(!currentSL) {
-			alert("You must choose a shopping list")
+			showError('listNotSelectedAlert');
 			return false;
 		}
 		

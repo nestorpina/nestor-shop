@@ -15,12 +15,15 @@
 <script src="js/controllers.js"></script>
 <script src="js/app.js"></script>
 <script src="js/services.js"></script>
+<script src="js/utils.js"></script>
 <script>
 $(function() {
 	$('.nav li a').on('click', function() {
 	    $(this).parent().parent().find('.active').removeClass('active');
 	    $(this).parent().addClass('active');
 	});
+	// Close button on alerts
+	$(".alert").alert()
 });
 </script>
 </head>
@@ -41,7 +44,7 @@ if (user != null) {
 	    </li>
 	    <li><a href="#shoplists">My Lists</a></li>
 	    <li class="divider-vertical"></li>
-	    <li><a href="#shoplists" id="currentSL">Current List : none</a></li>
+	    <li><a href="#shoplists" id="currentSL">Current List : none</a><span class="badge badge-info" id="listBadge"></span></li>
 	    <li class="divider-vertical"></li>
 	    <li><a href="#">Logged as: ${user.nickname}
 		    <% if(userService.isUserAdmin()) { %>
@@ -52,6 +55,13 @@ if (user != null) {
 	    </ul>
 	</div>
 </div>
+<div id="messages"></div>
+<div class="alert alert-block alert-error fade in hide" id="listNotSelectedAlert">
+	<button type="button" class="close" data-dismiss="alert">×</button>
+   <p>You must select a shopping list before adding products.</p>
+</div>
+
+
 <div ng-view></div>
 </body>
 </html>

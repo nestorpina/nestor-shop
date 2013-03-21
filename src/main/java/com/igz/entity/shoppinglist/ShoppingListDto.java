@@ -21,7 +21,7 @@ public class ShoppingListDto implements Serializable{
 	private Date creationDate;
 	private Boolean open;
 	private Integer itemsTotal;
-	private Integer ItemsBought;
+	private Integer itemsBought;
 	private Integer itemsDistinct;
 
 	
@@ -30,7 +30,7 @@ public class ShoppingListDto implements Serializable{
 		creationDate = new Date();
 		open = Boolean.TRUE;
 		itemsTotal = 0;
-		ItemsBought = 0;
+		itemsBought = 0;
 		itemsDistinct = 0;
 		
 	}
@@ -138,11 +138,11 @@ public class ShoppingListDto implements Serializable{
 	}
 
 	public Integer getItemsBought() {
-		return ItemsBought;
+		return itemsBought;
 	}
 
 	public void setItemsBought(Integer itemsBought) {
-		ItemsBought = itemsBought;
+		itemsBought = itemsBought;
 	} 
 	
 }

@@ -154,6 +154,21 @@ public class ShoppingListManager extends ShoppingListFactory {
 		}
 		
 	}
+	
+	/**
+	 * Buy a product from a shopping list. If the product had quantity > 1, it buys all of it
+	 * 
+	 * @param listKey
+	 * @param itemId
+	 * @return ShoppingListItemDto - The item bought
+
+	 * 
+	 * @throws IgzException - IGZ_SHOPPING_LIST_ITEM_NOT_FOUND if the item doesn't exists on the list
+	 * @throws IllegalArgumentException - If any parameter is null
+	 */
+	public ShoppingListItemDto buyProduct(Key<ShoppingListDto> listKey, Long itemId) throws IgzException {
+		return buyProduct(listKey, itemId, new Date());
+	}	
 
 	/**
 	 * Buy a product from a shopping list. If the product had quantity > 1, it buys all of it
@@ -161,11 +176,12 @@ public class ShoppingListManager extends ShoppingListFactory {
 	 * @param listKey
 	 * @param itemId
 	 * @param boughtDate
+	 * @return ShoppingListItemDto - The item bought
 	 * 
 	 * @throws IgzException - IGZ_SHOPPING_LIST_ITEM_NOT_FOUND if the item doesn't exists on the list
 	 * @throws IllegalArgumentException - If any parameter is null
 	 */
-	public void buyProduct(Key<ShoppingListDto> listKey, Long itemId, Date boughtDate) throws IgzException {
+	public ShoppingListItemDto buyProduct(Key<ShoppingListDto> listKey, Long itemId, Date boughtDate) throws IgzException {
 		if(listKey == null || itemId == null || boughtDate == null ) {
 			throw new IllegalArgumentException("parameters must not be null ");
 		}
@@ -187,6 +203,7 @@ public class ShoppingListManager extends ShoppingListFactory {
 		list.setItemsBought(list.getItemsBought()+item.getQuantity());
 		save(list);
 		
+		return item;		
 		
 	}
 	

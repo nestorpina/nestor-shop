@@ -44,6 +44,7 @@ import flexjson.transformer.DateTransformer;
  * DELETE /shoplist/{id}		removeShoppingList
  * POST /shoplist/item			putItemInShoppingList(Long)
  * POST /shoplist/item/remove	removeItemFromShoppingList
+ * POST /shoplist/item/buy		buyItemFromShoppingList
  * 
  *
  */
@@ -183,6 +184,34 @@ public class ShoppingListService {
 			return errorResponse(e);
 		}
     }    
+    
+    /**
+     * POST /shoplist/item/buy		buyItemFromShoppingList
+     * 
+     * Buy an item from a shopping list
+     * 
+     * @param listId - long id of the shopping list associated to the session user
+     * @param itemId - item of the list to buy
+     * @param p_request
+     * @return
+     */
+    @POST
+    @Path("/item/buy")
+    @Produces("application/json;charset=UTF-8")
+    public Response buyItemFromShoppingList( 
+    		@FormParam("listId") Long listId,
+  			@FormParam("itemId") Long itemId,
+    		@Context HttpServletRequest p_request ) {
+    	
+    	UserDto user = (UserDto) p_request.getAttribute("USER");
+		try {
+			ShoppingListDto shoppingList = slM.getByUserAndId(user, listId);
+			ShoppingListItemDto item = slM.buyProduct(shoppingList.getKey(), itemId);
+			return Response.ok().entity(new Gson().toJson(item)).build();
+		} catch (IgzException e) {
+			return errorResponse(e);
+		}
+    }        
 
     /**
      * POST /shoplist/		addShoppingList

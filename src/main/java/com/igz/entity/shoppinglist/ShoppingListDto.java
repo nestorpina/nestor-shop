@@ -142,7 +142,7 @@ public class ShoppingListDto implements Serializable{
 	}
 
 	public void setItemsBought(Integer itemsBought) {
-		itemsBought = itemsBought;
+		this.itemsBought = itemsBought;
 	} 
 	
 }

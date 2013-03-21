@@ -98,14 +98,23 @@ function ShopListDetailCtrl($scope, $routeParams, $http) {
 		$scope.shoplist = data;
 	});
 	
-	$scope.buyItem = function(itemId) {
-	    alert("buy item " + itemId);
+	$scope.buyItem = function(item, index) {
+		console.log(item);
+		var shoplist = $scope.shoplist.shoplist;
+		$http.post('/s/shoplist/item/buy',{listId : shoplist.id, itemId : item.id}).success(function(data) {
+			console.log(data);
+			console.log($scope.shoplist);
+			$scope.shoplist.items[index] = data
+			console.log('after');
+			console.log($scope.shoplist);
+		});
 	};
 	
 	$scope.removeItem = function(index) {
 		var shoplist = $scope.shoplist.shoplist;
 		var item = $scope.shoplist.items[index];
 		$http.post('/s/shoplist/item/remove',{listId : shoplist.id, itemId : item.id}).success(function(data) {
+			console.log(data);
 			$scope.shoplist.items.splice(index,1);
 		});
 	};	

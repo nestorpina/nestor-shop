@@ -11,12 +11,14 @@
     <th>Buy</th>
     <th>Product</th>
     <th>Quantity</th>
+    <th>Date Bought</th>
     <th>Remove</th>
 <tbody>
-  <tr ng-repeat="item in shoplist.items">
-  	<td><button class="btn btn-primary" ng-click="buyItem(item.id)">Buy</button></td>
+  <tr ng-repeat="item in shoplist.items" ng-class="{success: item.bought}">
+  	<td><button class="btn btn-primary" ng-click="buyItem(item,$index)" ng-hide="item.bought">Buy</button></td>
   	<td>{{item.product.name}}</td>
   	<td>{{item.quantity}}</td>
+  	<td>{{item.dateBought}}</td>
   	<td><button class="btn btn-link"  ng-click="removeItem($index)">Remove</button>
   </tr>
 </tbody>    

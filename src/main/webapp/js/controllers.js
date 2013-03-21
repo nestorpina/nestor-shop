@@ -76,6 +76,7 @@ function ShopListsCtrl($scope, $http) {
     $scope.selectSL = function(shoplist) {
     	currentSL = shoplist.id;
     	$("#currentSL").html("Current list: " + shoplist.name).prop("href","#shoplists/"+currentSL);
+    	hideError('listNotSelectedAlert');
     };    
     
     $scope.cancelAdd = function() {
@@ -102,11 +103,7 @@ function ShopListDetailCtrl($scope, $routeParams, $http) {
 		console.log(item);
 		var shoplist = $scope.shoplist.shoplist;
 		$http.post('/s/shoplist/item/buy',{listId : shoplist.id, itemId : item.id}).success(function(data) {
-			console.log(data);
-			console.log($scope.shoplist);
 			$scope.shoplist.items[index] = data
-			console.log('after');
-			console.log($scope.shoplist);
 		});
 	};
 	
@@ -114,7 +111,6 @@ function ShopListDetailCtrl($scope, $routeParams, $http) {
 		var shoplist = $scope.shoplist.shoplist;
 		var item = $scope.shoplist.items[index];
 		$http.post('/s/shoplist/item/remove',{listId : shoplist.id, itemId : item.id}).success(function(data) {
-			console.log(data);
 			$scope.shoplist.items.splice(index,1);
 		});
 	};	

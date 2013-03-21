@@ -4,3 +4,8 @@ function showError(id) {
 		$("#messages #"+id).fadeIn();
 	}
 }
+
+function hideError(id) {			
+	$("#messages #"+id).fadeOut().remove();
+}
+

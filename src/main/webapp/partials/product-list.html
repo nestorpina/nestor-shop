@@ -4,12 +4,19 @@
     <h1>Product List</h1>
 
       Search: <input ng-model="query" class="search-query">
+      
+      filter by category:
+      <select ng-model="category.name">
+      	<option value="">-All-</option>
+        <option value="Food">Food</option>
+        <option value="Gadgets">Gadgets</option>
+      </select>
+
       Sort by:
       <select ng-model="orderProp">
         <option value="name">Alphabetical</option>
         <option value="category.name">Category</option>
       </select>
-
     </div>
 
       
@@ -17,13 +24,15 @@
 <thead>
   <tr>
     <th>Product Name</th>
+    <th>Category</th>
     <th>Add to cart</th>
 <tbody>
-  <tr ng-repeat="product in products | filter:query | orderBy:orderProp"">
+  <tr ng-repeat="product in products | filter:query | filter:category.name | orderBy:orderProp"">
   	<td> 
   		<dt><a href="#/products/{{product.id}}">{{product.name}}</a> </dt>
   		<dd>{{product.description}}</dd>	
   	</td>
+  	<td>{{product.category.name}}</td>
   	<td><button class="btn btn-primary" ng-click="addProduct(product.id)">Add</button></td>
   </tr>
 </tbody>    

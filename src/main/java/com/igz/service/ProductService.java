@@ -44,7 +44,7 @@ public class ProductService {
     @Produces("application/json;charset=UTF-8")
     public Response getAllProducts( @Context HttpServletRequest p_request ) {
     	
-    	UserDto user = (UserDto) (UserDto) p_request.getAttribute("USER");
+    	UserDto user = (UserDto) (UserDto) p_request.getSession().getAttribute("USER");
     	LOGGER.info("/product/all :" + user.getKey());
     	
     	List<ProductDto> list = productM.findAll();

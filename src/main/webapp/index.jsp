@@ -1,3 +1,6 @@
+<%@ page import="com.google.appengine.api.users.User" %>
+<%@ page import="com.google.appengine.api.users.UserService" %>
+<%@ page import="com.google.appengine.api.users.UserServiceFactory" %>
 <!DOCTYPE html>
 <html lang="en" ng-app="nestorshop">
 <head>
@@ -22,6 +25,19 @@ $(function() {
 </script>
 </head>
 <body style="padding-top:40px">
+	<%
+	    UserService userService = UserServiceFactory.getUserService();
+	    User user = userService.getCurrentUser();
+	    if (user != null) {
+	        pageContext.setAttribute("user", user);	
+		} else {
+		%>
+		<p>Hello!
+		    <a href="<%= userService.createLoginURL(request.getRequestURI()) %>" data-ajax="false">Login</a> to make a shoplist.</p>
+		<%
+		    }
+		%>
+<% if (user!= null) { %>
 <div class="navbar navbar-fixed-top">
 	<div class="navbar-inner">
 		<span class="brand">Nestor-Shop</span>
@@ -33,10 +49,16 @@ $(function() {
 	    <li class="divider-vertical"></li>
 	    <li><a href="#shoplists" id="currentSL">Current List : none</a></li>
 	    <li class="divider-vertical"></li>
+	    <li><a href="#">Logged as: ${user.nickname}
+		    <% if(userService.isUserAdmin()) { %>
+				<small>(administrator)</small>
+			<% } %>
+		</a></li>
+	    <li><a href="<%= userService.createLogoutURL("/") %>" data-ajax="false">Logout</a></li>
 	    </ul>
 	</div>
 </div>
 <div ng-view></div>
-   
+<% } %>   
 </body>
 </html>

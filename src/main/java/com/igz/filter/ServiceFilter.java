@@ -10,8 +10,13 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.google.appengine.api.NamespaceManager;
+import com.google.appengine.api.users.User;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.igz.entity.user.UserDto;
 
 /**
@@ -31,15 +36,20 @@ public class ServiceFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest p_request, ServletResponse p_response, FilterChain p_filterChain) throws IOException, ServletException {
 		HttpServletRequest request = (HttpServletRequest) p_request;
-//		HttpServletResponse response = (HttpServletResponse) p_response;
-//		HttpSession session = request.getSession();
+		HttpServletResponse response = (HttpServletResponse) p_response;
+		HttpSession session = request.getSession();
 
-		LOGGER.info(request.getRequestURL().toString() );
+		UserService userService = UserServiceFactory.getUserService();
+	    User user = userService.getCurrentUser();
+	    if (user != null) {
+			UserDto userDto = new UserDto();
+			userDto.setEmail(user.getEmail());
+			userDto.setFullname(user.getNickname());
+			session.setAttribute("USER", userDto);
+	    }
 		NamespaceManager.set("intelygenz.com");
-		UserDto user = new UserDto();
-		user.setEmail("nestor.pina@intelygenz.com");
-		user.setFullname("Nestor Pina");
-		p_request.setAttribute("USER", user);
+
+		LOGGER.info(String.format("[%s] [%s]", user==null?"no-user":user.getEmail(), request.getRequestURL().toString() ));
 		
 //		String namespace = (String) session.getAttribute( NextInitHelper.NAMESPACE );
 //		
@@ -51,6 +61,10 @@ public class ServiceFilter implements Filter {
 //			LOGGER.info("No user in session when calling " + request.getPathInfo());
 //			return;
 //		}
+		if(user == null) {
+			response.setStatus( HttpServletResponse.SC_UNAUTHORIZED );
+			return;
+		}
 		
 		p_filterChain.doFilter(p_request, p_response);
 	}

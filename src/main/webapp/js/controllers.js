@@ -51,12 +51,12 @@ function ShopListsCtrl($scope, $http) {
 		
 	});
 	
-   $scope.deleteSL = function(index) {
-	   	var shoplist = $scope.shoplists[index];
-		$http.delete('/s/shoplist/'+shoplist.id).success(function(data) {
-			$scope.shoplists.splice(index,1);
+    $scope.deleteSL = function(p_list) {
+    	console.log(p_list);
+    	console.log($scope.shoplist);
+		$http.delete('/s/shoplist/'+p_list.id).success(function(data) {
+			 removeFromModel($scope.shoplists, p_list) 
 		});
-
     };
     
     
@@ -99,19 +99,17 @@ function ShopListDetailCtrl($scope, $routeParams, $http) {
 		$scope.shoplist = data;
 	});
 	
-	$scope.buyItem = function(item, index) {
-		console.log(item);
-		var shoplist = $scope.shoplist.shoplist;
-		$http.post('/s/shoplist/item/buy',{listId : shoplist.id, itemId : item.id}).success(function(data) {
-			$scope.shoplist.items[index] = data
+	$scope.buyItem = function(item) {
+		var shoplistId = $scope.shoplist.shoplist.id;
+		$http.post('/s/shoplist/item/buy',{listId : shoplistId, itemId : item.id}).success(function(data) {
+			updateModel($scope.shoplist.items,data)
 		});
 	};
 	
-	$scope.removeItem = function(index) {
-		var shoplist = $scope.shoplist.shoplist;
-		var item = $scope.shoplist.items[index];
-		$http.post('/s/shoplist/item/remove',{listId : shoplist.id, itemId : item.id}).success(function(data) {
-			$scope.shoplist.items.splice(index,1);
+	$scope.removeItem = function(item) {
+		var shoplistId = $scope.shoplist.shoplist.id;
+		$http.post('/s/shoplist/item/remove',{listId : shoplistId, itemId : item.id}).success(function(data) {
+			removeFromModel($scope.shoplist.items,item)
 		});
 	};	
 	

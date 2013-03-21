@@ -2,6 +2,11 @@
 
 /* Controllers */
 
+/**
+ * Product List
+ * Methods : 
+ * - addProduct - add a product to the selected shopping list
+ */
 function ProductListCtrl($scope, $http) {
 	$http.get('/s/product/all').success(function(data) {
 		$scope.products = data;
@@ -15,6 +20,10 @@ function ProductListCtrl($scope, $http) {
 	$scope.orderProp = 'name';
 }
 
+/**
+ * Product Detail
+ * Methods :  
+ */
 function ProductDetailCtrl($scope, $routeParams, $http) {
 
 	$http.get('/s/product/id/' + $routeParams.productId).success(function(data) {
@@ -22,6 +31,14 @@ function ProductDetailCtrl($scope, $routeParams, $http) {
 	});
 }
 
+/**
+ * Shopping Lists List
+ * Methods : 
+ * - deleteSL : delete a shopping list
+ * - newSL : show form to create a shopping list
+ * - addSL : create a shopping list
+ * - cancelAdd : hide form to create a shopping list
+ */
 function ShopListsCtrl($scope, $http) {
 	$http.get('/s/shoplist/all').success(function(data) {
 		if(!data) data = [];
@@ -40,6 +57,7 @@ function ShopListsCtrl($scope, $http) {
     
     $scope.newSL = function() {
         $scope.newFormEnabled = true;
+        $('input[ng-model=name]').focus();
     };
     
     $scope.addSL = function() {
@@ -58,6 +76,12 @@ function ShopListsCtrl($scope, $http) {
 	$scope.orderProp = 'name';
 }
 
+/**
+ * Shopping Lists Detail
+ * Methods : 
+ * - buyItem : marks as bought an item from the shopping list
+ * - removeItem : deletes an item from the shopping list
+ */
 function ShopListDetailCtrl($scope, $routeParams, $http) {
 
 	$http.get('/s/shoplist/id/' + $routeParams.shoplistId).success(function(data) {

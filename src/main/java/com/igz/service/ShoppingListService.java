@@ -66,7 +66,7 @@ public class ShoppingListService {
     @Produces("application/json;charset=UTF-8")
     public Response getAllShoppingList( @Context HttpServletRequest p_request ) {
     	
-    	UserDto user = (UserDto) (UserDto) p_request.getSession().getAttribute("USER");
+    	UserDto user = (UserDto) (UserDto) p_request.getAttribute("USER");
     	LOGGER.info("/shoppinglist/all :" + user.getKey());
     	
     	List<ShoppingListDto> list = slM.findByUser(user);
@@ -112,7 +112,7 @@ public class ShoppingListService {
     @Produces("application/json;charset=UTF-8")
     public Response getShoppingList( @PathParam("id") Long listId, @Context HttpServletRequest p_request ) {
     	
-    	UserDto user = (UserDto) p_request.getSession().getAttribute("USER");
+    	UserDto user = (UserDto) p_request.getAttribute("USER");
     	ShoppingListDto sl;
 		try {
 			sl = slM.getByUserAndId(user, listId);
@@ -144,7 +144,7 @@ public class ShoppingListService {
   			@DefaultValue("1") @FormParam("quantity") Long quantity,
     		@Context HttpServletRequest p_request ) {
     	
-    	UserDto user = (UserDto) p_request.getSession().getAttribute("USER");
+    	UserDto user = (UserDto) p_request.getAttribute("USER");
 
 		try {
 			ProductDto product = productM.getByLongId(productId);
@@ -174,7 +174,7 @@ public class ShoppingListService {
   			@FormParam("itemId") Long itemId,
     		@Context HttpServletRequest p_request ) {
     	
-    	UserDto user = (UserDto) p_request.getSession().getAttribute("USER");
+    	UserDto user = (UserDto) p_request.getAttribute("USER");
 		try {
 			ShoppingListDto shoppingList = slM.getByUserAndId(user, listId);
 			slM.removeProduct(shoppingList.getKey(), itemId);
@@ -201,7 +201,7 @@ public class ShoppingListService {
     		@FormParam("name") String name,
     		@Context HttpServletRequest p_request ) {
     	
-    	UserDto user = (UserDto) p_request.getSession().getAttribute("USER");
+    	UserDto user = (UserDto) p_request.getAttribute("USER");
 		ShoppingListDto shoplist = new ShoppingListDto();
 		shoplist.setName(name);
 		shoplist.setCreationDate(new Date());
@@ -227,7 +227,7 @@ public class ShoppingListService {
     		@PathParam("id") Long id,
     		@Context HttpServletRequest p_request ) {
 
-    	UserDto user = (UserDto) p_request.getSession().getAttribute("USER");
+    	UserDto user = (UserDto) p_request.getAttribute("USER");
     	LOGGER.info(String.format("User [%s] deleted list with id:%d", user.getEmail(), id));
     	ShoppingListDto shoplist;
 		try {

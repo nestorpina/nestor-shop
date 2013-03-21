@@ -46,7 +46,7 @@
 		<url-pattern>/refresh-config</url-pattern>
 	</servlet-mapping>
 	
-		<!-- SERVICE FILTER  --> 
+	<!-- SERVICE FILTER  --> 
 	<filter>
 		<filter-name>ServiceFilter</filter-name>
 		<filter-class>com.igz.filter.ServiceFilter</filter-class>
@@ -56,6 +56,17 @@
 		<url-pattern>/s/*</url-pattern>
     </filter-mapping>
     
+	<!-- SERVICE FILTER  --> 
+	<filter>
+		<filter-name>LoginFilter</filter-name>
+		<filter-class>com.igz.filter.LoginFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>LoginFilter</filter-name>
+		<url-pattern>/index.jsp</url-pattern>
+		<url-pattern>/</url-pattern>
+    </filter-mapping>
+        
     <!-- OBJETIFY FILTER -->
     <filter>
 		<filter-name>ObjectifyFilter</filter-name>

@@ -25,19 +25,13 @@ $(function() {
 </script>
 </head>
 <body style="padding-top:40px">
-	<%
-	    UserService userService = UserServiceFactory.getUserService();
-	    User user = userService.getCurrentUser();
-	    if (user != null) {
-	        pageContext.setAttribute("user", user);	
-		} else {
-		%>
-		<p>Hello!
-		    <a href="<%= userService.createLoginURL(request.getRequestURI()) %>" data-ajax="false">Login</a> to make a shoplist.</p>
-		<%
-		    }
-		%>
-<% if (user!= null) { %>
+<%
+UserService userService = UserServiceFactory.getUserService();
+User user = userService.getCurrentUser();
+if (user != null) {
+	pageContext.setAttribute("user", user);	
+}
+%>
 <div class="navbar navbar-fixed-top">
 	<div class="navbar-inner">
 		<span class="brand">Nestor-Shop</span>
@@ -59,6 +53,5 @@ $(function() {
 	</div>
 </div>
 <div ng-view></div>
-<% } %>   
 </body>
 </html>

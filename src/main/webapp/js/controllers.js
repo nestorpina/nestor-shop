@@ -1,7 +1,7 @@
 'use strict';
 
 /* Controllers */
-
+var currentSL;
 /**
  * Product List
  * Methods : 
@@ -13,7 +13,12 @@ function ProductListCtrl($scope, $http) {
 	});
 
 	$scope.addProduct = function(productId) {
-		$http.post('/s/shoplist/item/',{listId : 1, productId : productId}).success(function(data) {
+		if(!currentSL) {
+			alert("You must choose a shopping list")
+			return false;
+		}
+		
+		$http.post('/s/shoplist/item/',{listId : currentSL, productId : productId}).success(function(data) {
 		});
 	};
 	
@@ -68,6 +73,11 @@ function ShopListsCtrl($scope, $http) {
         $scope.cancelAdd();
     };
     
+    $scope.selectSL = function(shoplist) {
+    	currentSL = shoplist.id;
+    	$("#currentSL").html("Current list: " + shoplist.name).prop("href","#shoplists/"+currentSL);
+    };    
+    
     $scope.cancelAdd = function() {
         $scope.name = '';
         $scope.newFormEnabled = false;
@@ -93,8 +103,9 @@ function ShopListDetailCtrl($scope, $routeParams, $http) {
 	};
 	
 	$scope.removeItem = function(index) {
+		var shoplist = $scope.shoplist.shoplist;
 		var item = $scope.shoplist.items[index];
-		$http.post('/s/shoplist/item/remove',{listId : 1, itemId : item.id}).success(function(data) {
+		$http.post('/s/shoplist/item/remove',{listId : shoplist.id, itemId : item.id}).success(function(data) {
 			$scope.shoplist.items.splice(index,1);
 		});
 	};	

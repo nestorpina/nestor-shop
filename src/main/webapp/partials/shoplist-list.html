@@ -15,14 +15,16 @@
 <table class="table table-striped">
 <thead>
   <tr>
+  	<th></th>
     <th>Name</th>
     <th>Creation Date</th>
     <th><button ng-click="newSL()" class="btn btn-primary btn-small">New List</button></th>
 <tbody>
  <tr ng-repeat="shoplist in shoplists | filter:query | orderBy:orderProp">
+  	<td><button class="btn btn-primary"  ng-click="selectSL(shoplist,$index)">Set as current</button>
   	<td><a href="#/shoplists/{{shoplist.id}}">{{shoplist.name}}</a></td>
   	<td>{{shoplist.creationDate}}</td>
-  	<td><button class="btn btn-link"  ng-click="deleteSL($index)">Remove</button>
+  	<td><button class="btn btn-link"  ng-click="deleteSL(index)">Remove</button>
   </tr>
 </tbody>    
 </table>

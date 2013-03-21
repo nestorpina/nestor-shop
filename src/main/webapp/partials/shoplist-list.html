@@ -26,20 +26,22 @@
 </tbody>    
 </table>
     
+<ng-form name="newForm">
 <table class="table" ng-show="newFormEnabled">
   <tbody>
     <tr>                
-        <td>
-        <input type="text" ng-model="name"  size="30" placeholder="Shopping list Name">
+        <td>New Shopping list name :
+        <input type="text" ng-model="name" required size="30" placeholder="Shopping list Name">
       </td>
       <td>
         <a ng-click="cancelAdd()" class="btn">Cancel</a>
       </td>
       <td>
-        <a ng-click="addSL()" class="btn btn-primary">Save Shopping List</a>
+        <a ng-click="newForm.$valid && addSL()" class="btn btn-primary" ng-disabled="!newForm.$valid">Save Shopping List</a>
       </td>
     </tr>
   </tbody>
 </table>    
+</ng-form>
   </div>
 </div>

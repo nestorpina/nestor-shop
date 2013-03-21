@@ -4,7 +4,6 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Logger;
 
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.VoidWork;
@@ -17,22 +16,21 @@ import com.igz.exception.IgzException;
 
 public class ShoppingListManager extends ShoppingListFactory {
 	
-	private static final Logger LOGGER = Logger.getLogger(ShoppingListManager.class.getName());
-
 	/**
 	 * Add a product to the shoppingList
 	 * 
 	 * If the product is already on the list, increment the quantity of the order by one
 	 * 
-	 * @param shoppingList
+	 * @param shoplistKey
 	 * @param product
 	 * 
 	 * @throws IllegalArgumentException - if shoppingList is not saved
 	 * @return ShoppingListItemDto - The shoppingListItem created or incremented
+	 * @throws IgzException 
 	 * 
 	 */
-	public ShoppingListItemDto addProduct(ShoppingListDto shoppingList, ProductDto product) { 
-		return addProduct(shoppingList, product, 1);
+	public ShoppingListItemDto addProduct(Key<ShoppingListDto> shoplistKey, ProductDto product) throws IgzException { 
+		return addProduct(shoplistKey, product, 1);
 	}
 
 	/**
@@ -41,33 +39,32 @@ public class ShoppingListManager extends ShoppingListFactory {
 	 * If the product is already on the list, increment the quantity of the order by the 
 	 * quantity specified
 	 * 
-	 * @param p_shoppingList
+	 * @param shoplistKey
 	 * @param product
 	 * @param quantity
 	 * 
 	 * @throws IllegalArgumentException - if shoppingList is not saved
 	 * @return ShoppingListItemDto - The shoppingListItem created or incremented
+	 * @throws IgzException 
 	 */
-	public ShoppingListItemDto addProduct(final ShoppingListDto p_shoppingList, final ProductDto product, final int quantity ) {
-		if(p_shoppingList == null || product == null) {
+	public ShoppingListItemDto addProduct(final Key<ShoppingListDto> shoplistKey, final ProductDto product, final int quantity ) throws IgzException {
+		if(shoplistKey == null || product == null) {
 			throw new IllegalArgumentException("Shopping List and product must not be null");
 		}
-		if(p_shoppingList.getId() == null) {
-			throw new IllegalArgumentException("Shopping List must have an id (saved state)");
+		//TODO Include inside transaction
+		if(getByKey(shoplistKey)==null) {
+			throw new IgzException(IgzException.IGZ_INVALID_SHOPPING_LIST);
 		}
-		LOGGER.info(String.format("%s: Adding product %s(%d) to %s list", 
-					p_shoppingList.getOwner().getName(), product.getName(), quantity, p_shoppingList.getName()));
-		
 		return ofy().transact(new Work<ShoppingListItemDto>() {
 			@Override
 			public ShoppingListItemDto run() {
-				ShoppingListDto list = getByKey(p_shoppingList.getKey());
+				ShoppingListDto list = getByKey(shoplistKey);
 				final ShoppingListItemManager shoppingListItemM = new ShoppingListItemManager();
-				ShoppingListItemDto item = shoppingListItemM.findProductInShoppingList(p_shoppingList.getKey(), product);
+				ShoppingListItemDto item = shoppingListItemM.findProductInShoppingList(shoplistKey, product);
 				if(item != null) {
 					item = shoppingListItemM.updateOrder(item, quantity);
 				} else {
-					item = shoppingListItemM.createOrder(p_shoppingList.getKey(), product, quantity);
+					item = shoppingListItemM.createOrder(shoplistKey, product, quantity);
 					list.setItemsDistinct(list.getItemsDistinct()+1);
 					
 				}

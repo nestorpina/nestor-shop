@@ -1,7 +1,5 @@
 package com.igz.manager;
 
-import static com.googlecode.objectify.ObjectifyService.ofy;
-
 import java.util.Date;
 import java.util.List;
 
@@ -19,7 +17,6 @@ import com.google.appengine.tools.development.testing.LocalBlobstoreServiceTestC
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.googlecode.objectify.Key;
-import com.googlecode.objectify.VoidWork;
 import com.igz.entity.product.ProductDto;
 import com.igz.entity.shoppinglist.ShoppingListDto;
 import com.igz.entity.shoppinglist.ShoppingListManager;
@@ -63,11 +60,13 @@ public class ShoppingListManagerTest extends TestCase {
     }    
     
     @Test
-    public void testAddProductsInUnsavedList() throws IgzException {
-    	thrown.expect(IllegalArgumentException.class);
-    	
-    	ShoppingListDto list = new ShoppingListDto();
-   		shoppingListM.addProduct(list, TestHelper.product1);
+    public void testAddProductsInNonExistingList() throws IgzException {
+    	thrown.expect(IgzException.class);
+    	thrown.expect(ExceptionMatcher.hasCode(IgzException.IGZ_INVALID_SHOPPING_LIST));
+    	ShoppingListDto list = createAndSaveTestList();
+    	shoppingListM.deleteByKey(list.getKey());
+
+   		shoppingListM.addProduct(list.getKey(), TestHelper.product1);
     }
 
     /** 
@@ -79,22 +78,11 @@ public class ShoppingListManagerTest extends TestCase {
     @Test
     public void testAddProducts() throws IgzException {
 
-    	final ShoppingListDto list = createTestList();
-    	
-    	ofy().transact(new VoidWork() {
-			
-			@Override
-			public void vrun() {
-				
-				shoppingListM.save(list);
-				
-				for (ProductDto product : TestHelper.products) {
-					shoppingListM.addProduct(list, product);
-				}
-				
-			}
-		});
-    	ShoppingListDto listFromDatastore = shoppingListM.getByKey(list.getKey());
+    	final ShoppingListDto list = createAndSaveTestList();
+		for (ProductDto product : TestHelper.products) {
+			shoppingListM.addProduct(list.getKey(), product);
+		}
+		ShoppingListDto listFromDatastore = shoppingListM.getByKey(list.getKey());
     	assertEquals("Items total", TestHelper.products.size(), listFromDatastore.getItemsTotal().intValue());
     	assertEquals("Items Distinct", TestHelper.products.size(), listFromDatastore.getItemsDistinct().intValue());
     	assertEquals("Items Bought", 0, listFromDatastore.getItemsBought().intValue());
@@ -118,10 +106,10 @@ public class ShoppingListManagerTest extends TestCase {
 
     	// Add all products
     	for (ProductDto product : TestHelper.products) {
-    		shoppingListM.addProduct(list, product);
+    		shoppingListM.addProduct(list.getKey(), product);
 		}
     	// Add again the first product
-    	shoppingListM.addProduct(list, TestHelper.product1);
+    	shoppingListM.addProduct(list.getKey(), TestHelper.product1);
     	
     	List<ShoppingListItemDto> itemList = shoppingListM.getShoppingListItems(list.getKey());
     	assertEquals("Item list size", TestHelper.products.size(), itemList.size());
@@ -148,13 +136,13 @@ public class ShoppingListManagerTest extends TestCase {
      * @throws IgzException
      */    
     @Test
-    public void testRemoveItemFromShoppingList() {
+    public void testRemoveItemFromShoppingList() throws IgzException {
     	ShoppingListDto list = createAndSaveTestList();
 
     	
     	ShoppingListItemDto addedProduct = null;
     	for (ProductDto product : TestHelper.products) {
-    		addedProduct = shoppingListM.addProduct(list, product);
+    		addedProduct = shoppingListM.addProduct(list.getKey(), product);
 		}
     	
     	shoppingListM.removeProduct(list.getKey(), addedProduct.getId());
@@ -204,7 +192,7 @@ public class ShoppingListManagerTest extends TestCase {
     @Test
     public void testSetQuantityOfProduct() throws IgzException {
     	ShoppingListDto list = createAndSaveTestList();
-    	ShoppingListItemDto item = shoppingListM.addProduct(list, TestHelper.product1);
+    	ShoppingListItemDto item = shoppingListM.addProduct(list.getKey(), TestHelper.product1);
     	shoppingListM.setProductQuantity(list.getKey(), item.getId(), 20);
     	List<ShoppingListItemDto> products = shoppingListM.getShoppingListItems(list.getKey());
     	assertEquals("Quantity of product1 ordered", 20, products.get(0).getQuantity().intValue());
@@ -223,7 +211,7 @@ public class ShoppingListManagerTest extends TestCase {
     @Test
     public void testSetQuantityOfProductToZero() throws IgzException {
     	ShoppingListDto list = createAndSaveTestList();
-    	ShoppingListItemDto item = shoppingListM.addProduct(list, TestHelper.product1);
+    	ShoppingListItemDto item = shoppingListM.addProduct(list.getKey(), TestHelper.product1);
     	shoppingListM.setProductQuantity(list.getKey(), item.getId(), 0);
     	List<ShoppingListItemDto> products = shoppingListM.getShoppingListItems(list.getKey());
     	assertTrue("Product list size should be empty", products.isEmpty());
@@ -269,7 +257,7 @@ public class ShoppingListManagerTest extends TestCase {
     public void testBuyProduct() throws IgzException {
 
     	ShoppingListDto list = createAndSaveTestList();
-    	ShoppingListItemDto item = shoppingListM.addProduct(list, TestHelper.product1);
+    	ShoppingListItemDto item = shoppingListM.addProduct(list.getKey(), TestHelper.product1);
     	Date dateBought = new Date();
     	shoppingListM.buyProduct(list.getKey(), item.getId(), dateBought);
     	List<ShoppingListItemDto> products = shoppingListM.getShoppingListItems(list.getKey());
@@ -293,35 +281,36 @@ public class ShoppingListManagerTest extends TestCase {
     public void testShoppingListCounters() throws IgzException {
 
     	ShoppingListDto list = createAndSaveTestList();
-    	ShoppingListItemDto item1 = shoppingListM.addProduct(list, TestHelper.product1);
-    	validate_Total_Distinct_Bought_Counters(1,1,0,list.getKey());
+    	Key<ShoppingListDto> key = list.getKey();
+		ShoppingListItemDto item1 = shoppingListM.addProduct(key, TestHelper.product1);
+    	validate_Total_Distinct_Bought_Counters(1,1,0,key);
     	
-    	shoppingListM.buyProduct(list.getKey(), item1.getId());
-    	validate_Total_Distinct_Bought_Counters(1,1,1,list.getKey());
+    	shoppingListM.buyProduct(key, item1.getId());
+    	validate_Total_Distinct_Bought_Counters(1,1,1,key);
 
-    	ShoppingListItemDto item2 = shoppingListM.addProduct(list, TestHelper.product2);
-    	validate_Total_Distinct_Bought_Counters(2,2,1,list.getKey());
+    	ShoppingListItemDto item2 = shoppingListM.addProduct(key, TestHelper.product2);
+    	validate_Total_Distinct_Bought_Counters(2,2,1,key);
 
-    	ShoppingListItemDto item3 = shoppingListM.addProduct(list, TestHelper.product3, 5);
-    	validate_Total_Distinct_Bought_Counters(7,3,1,list.getKey());
+    	ShoppingListItemDto item3 = shoppingListM.addProduct(key, TestHelper.product3, 5);
+    	validate_Total_Distinct_Bought_Counters(7,3,1,key);
 
-    	shoppingListM.buyProduct(list.getKey(), item3.getId());
-    	validate_Total_Distinct_Bought_Counters(7,3,6,list.getKey());
+    	shoppingListM.buyProduct(key, item3.getId());
+    	validate_Total_Distinct_Bought_Counters(7,3,6,key);
 
-    	shoppingListM.removeProduct(list.getKey(), item3.getId());
-    	validate_Total_Distinct_Bought_Counters(2,2,1,list.getKey());
+    	shoppingListM.removeProduct(key, item3.getId());
+    	validate_Total_Distinct_Bought_Counters(2,2,1,key);
 
-    	shoppingListM.removeProduct(list.getKey(), item1.getId());
-    	validate_Total_Distinct_Bought_Counters(1,1,0,list.getKey());
+    	shoppingListM.removeProduct(key, item1.getId());
+    	validate_Total_Distinct_Bought_Counters(1,1,0,key);
 
-    	shoppingListM.addProduct(list, TestHelper.product2, 10);
-    	validate_Total_Distinct_Bought_Counters(11,1,0,list.getKey());
+    	shoppingListM.addProduct(key, TestHelper.product2, 10);
+    	validate_Total_Distinct_Bought_Counters(11,1,0,key);
 
-    	shoppingListM.buyProduct(list.getKey(), item2.getId());
-    	validate_Total_Distinct_Bought_Counters(11,1,11,list.getKey());
+    	shoppingListM.buyProduct(key, item2.getId());
+    	validate_Total_Distinct_Bought_Counters(11,1,11,key);
 
-    	shoppingListM.removeProduct(list.getKey(), item2.getId());
-    	validate_Total_Distinct_Bought_Counters(0,0,0,list.getKey());
+    	shoppingListM.removeProduct(key, item2.getId());
+    	validate_Total_Distinct_Bought_Counters(0,0,0,key);
 
     }
 
@@ -349,9 +338,9 @@ public class ShoppingListManagerTest extends TestCase {
     }
     
     @Test
-    public void testGetDetailOfProductInOrder() {
+    public void testGetDetailOfProductInOrder() throws IgzException {
     	ShoppingListDto list = createAndSaveTestList();
-    	shoppingListM.addProduct(list, TestHelper.product1);
+    	shoppingListM.addProduct(list.getKey(), TestHelper.product1);
     	List<ShoppingListItemDto> items = shoppingListM.getShoppingListItems(list.getKey());
 		assertEquals(TestHelper.product1.getName(), items.get(0).getProduct().getName());
     	System.out.println(new JSONSerializer().exclude("*.class","*.raw","*.root").prettyPrint(true).serialize(items));

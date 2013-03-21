@@ -3,6 +3,7 @@ package com.igz.helpers;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 import com.google.appengine.api.NamespaceManager;
 import com.googlecode.objectify.ObjectifyService;
@@ -15,8 +16,12 @@ import com.igz.entity.shoppinglist.ShoppingListManager;
 import com.igz.entity.shoppinglistitem.ShoppingListItemDto;
 import com.igz.entity.user.UserDto;
 import com.igz.entity.user.UserManager;
+import com.igz.exception.IgzException;
+import com.igzcode.java.util.Trace;
 
 public class TestHelper {
+	
+	private static final Logger LOGGER = Logger.getLogger(TestHelper.class.getName());
 
 	public static CategoryDto category1;
 	public static CategoryDto category2;
@@ -139,8 +144,12 @@ public class TestHelper {
     	sl.setId(1L);
     	slM.save( sl );
     	
-    	slM.addProduct(sl, product1);
-    	slM.addProduct(sl, product2);
+    	try {
+    	slM.addProduct(sl.getKey(), product1);
+			slM.addProduct(sl.getKey(), product2);
+		} catch (IgzException e) {
+			LOGGER.severe(Trace.error(e));
+		}
     	
 	}
 	

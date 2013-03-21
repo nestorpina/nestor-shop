@@ -150,7 +150,7 @@ public class ShoppingListService {
 		try {
 			ProductDto product = productM.getByLongId(productId);
 			ShoppingListDto shoppingList = slM.getByUserAndId(user, listId);
-			ShoppingListItemDto item = slM.addProduct(shoppingList, product, quantity.intValue());
+			ShoppingListItemDto item = slM.addProduct(shoppingList.getKey(), product, quantity.intValue());
 			return Response.ok().entity( new Gson().toJson( item ) ).build();
 		} catch (IgzException e) {
 			return errorResponse(e);

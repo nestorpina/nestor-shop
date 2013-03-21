@@ -72,9 +72,9 @@ public class ProductManagerTest extends TestCase {
     @Test 
     public void testFindProductsByCategory() {
     	List<ProductDto> foods = manager.findByCategory(TestHelper.category1);
-    	assertEquals("number of food products", 2, foods.size());
+    	assertEquals("number of food products", 4, foods.size());
     	List<ProductDto> gadgets = manager.findByCategory(TestHelper.category2);
-    	assertEquals("number of gadgets products", 1, gadgets.size());
+    	assertEquals("number of gadgets products", 2, gadgets.size());
     }
     
 }

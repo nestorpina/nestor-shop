@@ -61,6 +61,8 @@ public class TestHelper {
 		category2.setCreationDate(new Date());
 		categoryM.save(category2);
 		
+    	products = new ArrayList<ProductDto>();
+
 		ProductManager productM = new ProductManager();
 		product1 = new ProductDto();
     	product1.setCreationDate(new Date());
@@ -71,7 +73,8 @@ public class TestHelper {
     	product1.setId(1L);
     	product1.setCategory(category1);
     	productM.save(product1);
-    	
+    	products.add(product1);
+   	
 		product2 = new ProductDto();
 		product2.setCreationDate(new Date());
 		product2.setName("Rice");
@@ -81,7 +84,8 @@ public class TestHelper {
 		product2.setId(2L);
 		product2.setCategory(category1);
 		productM.save(product2);
-		
+    	products.add(product2);
+	
 		product3 = new ProductDto();
 		product3.setCreationDate(new Date());
 		product3.setName("Ipad");
@@ -91,11 +95,41 @@ public class TestHelper {
 		product3.setId(3L);
 		product3.setCategory(category2);
 		productM.save(product3);		
-    	
-    	products = new ArrayList<ProductDto>();
-    	products.add(product1);
-    	products.add(product2);
-    	products.add(product3);
+		products.add(product3);
+
+		ProductDto p = new ProductDto();
+		p.setCreationDate(new Date());
+		p.setName("Samsung Galaxy S20");
+		p.setDescription("Samsung mobile phone with 20 inches screen");
+		p.setUnitType(ProductDto.UnitType.ITEM);
+		p.setUnits(1);
+		p.setId(4L);
+		p.setCategory(category2);
+		productM.save(p);	
+		products.add(p);
+
+		p = new ProductDto();
+		p.setCreationDate(new Date());
+		p.setName("Brick of Milk");
+		p.setDescription("A liter of fresh milk");
+		p.setUnitType(ProductDto.UnitType.LITER);
+		p.setUnits(1);
+		p.setId(5L);
+		p.setCategory(category1);
+		productM.save(p);	
+		products.add(p);
+
+		p = new ProductDto();
+		p.setCreationDate(new Date());
+		p.setName("Pack of 6 Milk Bricks");
+		p.setDescription("6 liters of fresh milk");
+		p.setUnitType(ProductDto.UnitType.LITER);
+		p.setUnits(6);
+		p.setId(6L);
+		p.setCategory(category1);
+		productM.save(p);	
+		products.add(p);
+
     	
     	ShoppingListManager slM = new ShoppingListManager();
     	ShoppingListDto sl = new ShoppingListDto();

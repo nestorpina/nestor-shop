@@ -18,7 +18,7 @@ function hideError(id) {
  */
 function removeFromModel(list, object) {
 	jQuery.each(list, function(index, item) {
-		if(item.id == object.id) {
+		if(item && item.id == object.id) {
 			list.splice(index,1);
 			return;
 		}

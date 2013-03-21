@@ -18,6 +18,7 @@ import org.junit.runners.BlockJUnit4ClassRunner;
 import com.google.appengine.tools.development.testing.LocalBlobstoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.googlecode.objectify.Key;
 import com.googlecode.objectify.VoidWork;
 import com.igz.entity.product.ProductDto;
 import com.igz.entity.shoppinglist.ShoppingListDto;
@@ -280,7 +281,56 @@ public class ShoppingListManagerTest extends TestCase {
     	assertEquals("Items Distinct", 1, listFromDatastore.getItemsDistinct().intValue());
     	assertEquals("Items Bought", 1, listFromDatastore.getItemsBought().intValue());
     	
-    }    
+    } 
+    
+    /**
+     * We add products, update its quantities, then buy them and finally remove them
+     * We test the item counters in the shopping list are updated successfully in each step
+     * 
+     * @throws IgzException
+     */
+    @Test
+    public void testShoppingListCounters() throws IgzException {
+
+    	ShoppingListDto list = createAndSaveTestList();
+    	ShoppingListItemDto item1 = shoppingListM.addProduct(list, TestHelper.product1);
+    	validate_Total_Distinct_Bought_Counters(1,1,0,list.getKey());
+    	
+    	shoppingListM.buyProduct(list.getKey(), item1.getId());
+    	validate_Total_Distinct_Bought_Counters(1,1,1,list.getKey());
+
+    	ShoppingListItemDto item2 = shoppingListM.addProduct(list, TestHelper.product2);
+    	validate_Total_Distinct_Bought_Counters(2,2,1,list.getKey());
+
+    	ShoppingListItemDto item3 = shoppingListM.addProduct(list, TestHelper.product3, 5);
+    	validate_Total_Distinct_Bought_Counters(7,3,1,list.getKey());
+
+    	shoppingListM.buyProduct(list.getKey(), item3.getId());
+    	validate_Total_Distinct_Bought_Counters(7,3,6,list.getKey());
+
+    	shoppingListM.removeProduct(list.getKey(), item3.getId());
+    	validate_Total_Distinct_Bought_Counters(2,2,1,list.getKey());
+
+    	shoppingListM.removeProduct(list.getKey(), item1.getId());
+    	validate_Total_Distinct_Bought_Counters(1,1,0,list.getKey());
+
+    	shoppingListM.addProduct(list, TestHelper.product2, 10);
+    	validate_Total_Distinct_Bought_Counters(11,1,0,list.getKey());
+
+    	shoppingListM.buyProduct(list.getKey(), item2.getId());
+    	validate_Total_Distinct_Bought_Counters(11,1,11,list.getKey());
+
+    	shoppingListM.removeProduct(list.getKey(), item2.getId());
+    	validate_Total_Distinct_Bought_Counters(0,0,0,list.getKey());
+
+    }
+
+	private void validate_Total_Distinct_Bought_Counters(int total, int distinct, int bought, Key<ShoppingListDto> key) {
+    	ShoppingListDto listFromDatastore = shoppingListM.getByKey(key);
+		assertEquals("Items total", total, listFromDatastore.getItemsTotal().intValue());
+    	assertEquals("Items Distinct", distinct, listFromDatastore.getItemsDistinct().intValue());
+    	assertEquals("Items Bought", bought, listFromDatastore.getItemsBought().intValue());
+	} 
     
     @Test
     /**

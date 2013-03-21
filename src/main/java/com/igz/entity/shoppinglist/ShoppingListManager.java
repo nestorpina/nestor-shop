@@ -41,38 +41,39 @@ public class ShoppingListManager extends ShoppingListFactory {
 	 * If the product is already on the list, increment the quantity of the order by the 
 	 * quantity specified
 	 * 
-	 * @param shoppingList
+	 * @param p_shoppingList
 	 * @param product
 	 * @param quantity
 	 * 
 	 * @throws IllegalArgumentException - if shoppingList is not saved
 	 * @return ShoppingListItemDto - The shoppingListItem created or incremented
 	 */
-	public ShoppingListItemDto addProduct(final ShoppingListDto shoppingList, final ProductDto product, final int quantity ) {
-		if(shoppingList == null || product == null) {
+	public ShoppingListItemDto addProduct(final ShoppingListDto p_shoppingList, final ProductDto product, final int quantity ) {
+		if(p_shoppingList == null || product == null) {
 			throw new IllegalArgumentException("Shopping List and product must not be null");
 		}
-		if(shoppingList.getId() == null) {
+		if(p_shoppingList.getId() == null) {
 			throw new IllegalArgumentException("Shopping List must have an id (saved state)");
 		}
 		LOGGER.info(String.format("%s: Adding product %s(%d) to %s list", 
-					shoppingList.getOwner().getName(), product.getName(), quantity, shoppingList.getName()));
+					p_shoppingList.getOwner().getName(), product.getName(), quantity, p_shoppingList.getName()));
 		
 		return ofy().transact(new Work<ShoppingListItemDto>() {
 			@Override
 			public ShoppingListItemDto run() {
+				ShoppingListDto list = getByKey(p_shoppingList.getKey());
 				final ShoppingListItemManager shoppingListItemM = new ShoppingListItemManager();
-				ShoppingListItemDto item = shoppingListItemM.findProductInShoppingList(shoppingList.getKey(), product);
+				ShoppingListItemDto item = shoppingListItemM.findProductInShoppingList(p_shoppingList.getKey(), product);
 				if(item != null) {
 					item = shoppingListItemM.updateOrder(item, quantity);
 				} else {
-					item = shoppingListItemM.createOrder(shoppingList.getKey(), product, quantity);
-					shoppingList.setItemsDistinct(shoppingList.getItemsDistinct()+1);
+					item = shoppingListItemM.createOrder(p_shoppingList.getKey(), product, quantity);
+					list.setItemsDistinct(list.getItemsDistinct()+1);
 					
 				}
-				shoppingList.setItemsTotal(shoppingList.getItemsTotal()+quantity);
+				list.setItemsTotal(list.getItemsTotal()+quantity);
 				
-				save (shoppingList);
+				save (list);
 				return item;
 			}
 		});
@@ -160,8 +161,7 @@ public class ShoppingListManager extends ShoppingListFactory {
 	 * 
 	 * @param listKey
 	 * @param itemId
-	 * @return ShoppingListItemDto - The item bought
-
+	 * @return Updated shopping list
 	 * 
 	 * @throws IgzException - IGZ_SHOPPING_LIST_ITEM_NOT_FOUND if the item doesn't exists on the list
 	 * @throws IllegalArgumentException - If any parameter is null
@@ -176,7 +176,7 @@ public class ShoppingListManager extends ShoppingListFactory {
 	 * @param listKey
 	 * @param itemId
 	 * @param boughtDate
-	 * @return ShoppingListItemDto - The item bought
+	 * @return Updated shopping list
 	 * 
 	 * @throws IgzException - IGZ_SHOPPING_LIST_ITEM_NOT_FOUND if the item doesn't exists on the list
 	 * @throws IllegalArgumentException - If any parameter is null
@@ -203,8 +203,7 @@ public class ShoppingListManager extends ShoppingListFactory {
 		list.setItemsBought(list.getItemsBought()+item.getQuantity());
 		save(list);
 		
-		return item;		
-		
+		return item;
 	}
 	
 	public List<ShoppingListDto> findByUser(UserDto user) {

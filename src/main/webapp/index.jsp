@@ -8,6 +8,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Bootstrap -->
 <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+<link href="css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
 <script src="js/jquery1.9.0.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="js/angular/angular.min.js"></script>
@@ -28,8 +29,13 @@ $(function() {
 	$(".alert").alert()
 });
 </script>
+<style>
+@media (min-width: 979px) {
+.container { padding-top:40px;}
+}
+</style>
 </head>
-<body style="padding-top:40px">
+<body>
 <%
 UserService userService = UserServiceFactory.getUserService();
 User user = userService.getCurrentUser();
@@ -37,7 +43,6 @@ if (user != null) {
 	pageContext.setAttribute("user", user);	
 }
 %>
-<div class="container">
 
 <div class="navbar navbar-fixed-top">
 	<div class="navbar-inner">
@@ -59,6 +64,8 @@ if (user != null) {
 	    </ul>
 	</div>
 </div>
+
+<div class="container" >
 <div id="messages"></div>
 <div class="alert alert-block alert-error fade in hide" id="listNotSelectedAlert">
 	<button type="button" class="close" data-dismiss="alert">×</button>

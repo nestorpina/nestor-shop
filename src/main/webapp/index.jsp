@@ -37,6 +37,8 @@ if (user != null) {
 	pageContext.setAttribute("user", user);	
 }
 %>
+<div class="container">
+
 <div class="navbar navbar-fixed-top">
 	<div class="navbar-inner">
 		<span class="brand">Nestor-Shop</span>
@@ -63,7 +65,8 @@ if (user != null) {
    <p>You must select a shopping list before adding products.</p>
 </div>
 
-
 <div ng-view></div>
+
+</div>
 </body>
 </html>

@@ -21,6 +21,7 @@
     <th>Total items</th>
     <th>Distinct items</th>
     <th>Bought items</th>
+    <th>Progress (items bought)</th>
     <th><button ng-click="newSL()" class="btn btn-primary btn-small">New List</button></th>
 <tbody>
  <tr ng-repeat="shoplist in shoplists | filter:query | orderBy:orderProp">
@@ -30,6 +31,11 @@
   	<td>{{shoplist.itemsTotal}}</td>
   	<td>{{shoplist.itemsDistinct}}</td>
   	<td>{{shoplist.itemsBought}}</td>
+  	<td>
+  		<div class="progress progress-info progress-striped">
+  			<div class="bar" style="width: {{shoplist.itemsBought / shoplist.itemsTotal * 100 }}%"></div>
+		</div>
+	</td>
   	<td><button class="btn btn-link"  ng-click="deleteSL(shoplist)">Remove</button>
   </tr>
 </tbody>    

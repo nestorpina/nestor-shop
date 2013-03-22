@@ -2,21 +2,24 @@
   <div class="row-fluid">
     <div class="form-search">
     <h1>Product List</h1>
-
-      Search: <input ng-model="query" class="search-query">
-      
-      filter by category:
-      <select ng-model="category.name">
-      	<option value="">-All-</option>
-        <option value="Food">Food</option>
-        <option value="Gadgets">Gadgets</option>
-      </select>
-
-      Sort by:
-      <select ng-model="orderProp">
-        <option value="name">Alphabetical</option>
-        <option value="category.name">Category</option>
-      </select>
+	  <div class="row offset1">
+	      Search: <input ng-model="query" class="search-query">
+      </div>
+	  <div class="row offset1">
+	      filter by category:
+	      <select ng-model="category.name">
+	      	<option value="">-All-</option>
+	        <option value="Food">Food</option>
+	        <option value="Gadgets">Gadgets</option>
+	      </select>
+	  </div>
+	  <div class="row offset1">
+	      Sort by:
+	      <select ng-model="orderProp">
+	        <option value="name">Alphabetical</option>
+	        <option value="category.name">Category</option>
+	      </select>
+	   </div>
     </div>
 
       

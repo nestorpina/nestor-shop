@@ -79,7 +79,7 @@ function ShopListsCtrl($scope, $http) {
     $scope.selectSL = function(shoplist) {
     	currentSL = shoplist.id;
     	var value = "Current list: " + shoplist.name + '<span class="badge badge-info" id="listBadge" style="margin-left:5px">'+shoplist.itemsTotal+'</span>';
-    	$("#currentSL").html(value).prop("href","#shoplists/"+currentSL).effect("highlight", {color : "cyan"}, 1000);
+    	$("#currentSL").html(value).prop("href","#shoplists/"+currentSL).stop().effect("highlight", {color : "cyan"}, 1000);
     	hideError('listNotSelectedAlert');
     };    
     
@@ -106,14 +106,25 @@ function ShopListDetailCtrl($scope, $routeParams, $http) {
 	$scope.buyItem = function(item) {
 		var shoplistId = $scope.shoplist.shoplist.id;
 		$http.post('/s/shoplist/item/buy',{listId : shoplistId, itemId : item.id}).success(function(data) {
-			updateModel($scope.shoplist.items,data)
+//			updateModel($scope.shoplist.items,data)
+			$http.get('/s/shoplist/id/' + shoplistId).success(function(data) {
+				$scope.shoplist = data;
+			});			
 		});
 	};
 	
 	$scope.removeItem = function(item) {
 		var shoplistId = $scope.shoplist.shoplist.id;
 		$http.post('/s/shoplist/item/remove',{listId : shoplistId, itemId : item.id}).success(function(data) {
-			removeFromModel($scope.shoplist.items,item)
+//			removeFromModel($scope.shoplist.items,item)
+			$http.get('/s/shoplist/id/' + shoplistId).success(function(data) {
+				$scope.shoplist = data;
+			});
+			if(shoplistId == currentSL) {
+				// Update list counter on navbar
+				var newValue = parseInt($("#listBadge").html())-item.quantity;
+				$("#listBadge").html(newValue).stop().effect("highlight", {color : "cyan" }, 1000);
+			}
 		});
 	};	
 	

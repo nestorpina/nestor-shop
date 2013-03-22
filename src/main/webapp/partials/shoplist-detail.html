@@ -1,10 +1,22 @@
-<img ng-src="{{mainImageUrl}}" class="product">
-
 <h1>{{shoplist.shoplist.name}}</h1>
-<h4>Owner: {{ shoplist.shoplist.owner.raw.name }}</h4>
+<h4>Owner: {{ shoplist.shoplist.owner.name }}</h4>
 
-<p>Creation date : {{shoplist.shoplist.creationDate}}</p>
-
+<div class="row">
+	<div class="span6">
+	<p>Creation date : {{shoplist.shoplist.creationDate}}</p>
+	
+	<p>Progress (items bought) :
+		<div class="progress progress-info progress-striped">
+			<div class="bar" style="width: {{shoplist.shoplist.itemsBought / shoplist.shoplist.itemsTotal * 100 }}%"></div>
+		</div>
+	</p>
+	</div>
+	<div class="span3">
+		<p>Items total : {{shoplist.shoplist.itemsTotal}}</p>
+		<p>Items bought : {{shoplist.shoplist.itemsBought}}</p>
+		<p>Items distinct : {{shoplist.shoplist.itemsDistinct}}</p>
+	</div>
+</div>
 <table class="table table-striped">
 <thead>
   <tr>

@@ -16,6 +16,8 @@
 <script src="js/app.js"></script>
 <script src="js/services.js"></script>
 <script src="js/utils.js"></script>
+<script src="js/jquery-ui-1.10.2.custom.min.js"></script>
+
 <script>
 $(function() {
 	$('.nav li a').on('click', function() {
@@ -44,7 +46,7 @@ if (user != null) {
 	    </li>
 	    <li><a href="#shoplists">My Lists</a></li>
 	    <li class="divider-vertical"></li>
-	    <li><a href="#shoplists" id="currentSL">Current List : none</a><span class="badge badge-info" id="listBadge"></span></li>
+	    <li><a href="#shoplists" id="currentSL">Current List : none</a></li>
 	    <li class="divider-vertical"></li>
 	    <li><a href="#">Logged as: ${user.nickname}
 		    <% if(userService.isUserAdmin()) { %>

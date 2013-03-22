@@ -19,6 +19,9 @@ function ProductListCtrl($scope, $http) {
 		}
 		
 		$http.post('/s/shoplist/item/',{listId : currentSL, productId : productId}).success(function(data) {
+			// Update list counter on navbar
+			var newValue = parseInt($("#listBadge").html())+1;
+			$("#listBadge").html(newValue).effect("highlight", {color : "cyan" }, 1000);
 		});
 	};
 	
@@ -75,7 +78,8 @@ function ShopListsCtrl($scope, $http) {
     
     $scope.selectSL = function(shoplist) {
     	currentSL = shoplist.id;
-    	$("#currentSL").html("Current list: " + shoplist.name).prop("href","#shoplists/"+currentSL);
+    	var value = "Current list: " + shoplist.name + '<span class="badge badge-info" id="listBadge" style="margin-left:5px">'+shoplist.itemsTotal+'</span>';
+    	$("#currentSL").html(value).prop("href","#shoplists/"+currentSL).effect("highlight", {color : "cyan"}, 1000);
     	hideError('listNotSelectedAlert');
     };    
     

@@ -224,7 +224,6 @@ public class ShoppingListService {
      * @return
      */
     @POST
-    @Path("/")
     @Produces("application/json;charset=UTF-8")
     public Response addShoppingList( 
     		@FormParam("name") String name,

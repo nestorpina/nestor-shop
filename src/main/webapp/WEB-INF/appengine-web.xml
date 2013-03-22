@@ -1,10 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
     <application>nestor-shop</application>
-    <version>${appengine.app.version}</version>
+    <version>dev</version>
     <threadsafe>true</threadsafe>
 
     <system-properties>
         <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>
     </system-properties>
+
+	<static-files>
+		<include path="/**.js" expiration="1d" />
+		<include path="/**.svg" expiration="1d" />
+		<include path="/**.woff" expiration="1d" />
+		<include path="/**.eot" expiration="1d" />
+		<include path="/**.png" expiration="1d" />
+		<include path="/**.gif" expiration="1d" />
+		<include path="/**.jpg" expiration="1d" />
+		<include path="/**.css" expiration="1d" />
+		<include path="/**.ico" expiration="1d" />
+		<include path="/**.xml" expiration="1d" />
+		<include path="/**.html" expiration="1d" />
+	</static-files>
+	    
 </appengine-web-app>

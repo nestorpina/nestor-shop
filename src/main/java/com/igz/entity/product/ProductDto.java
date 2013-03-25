@@ -28,6 +28,7 @@ public class ProductDto implements Serializable{
 
 	private Date creationDate;
 
+	public ProductDto() {}
 	
 	public Key<ProductDto> getKey() {
 		return Key.create(ProductDto.class, id);

@@ -19,6 +19,16 @@ public class CategoryDto implements Serializable{
 
 	private Date creationDate;
 
+	public CategoryDto() {}
+	
+	/**
+	 * Constructor for use with jersey-jackson deserialization
+	 * @param id
+	 */
+	public CategoryDto(String idString) {
+		id = Long.valueOf(idString);
+	}
+	
 	public Key<CategoryDto> getKey() {
 		return Key.create(CategoryDto.class, id);
 	}

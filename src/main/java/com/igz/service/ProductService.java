@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -12,6 +13,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
@@ -30,6 +32,7 @@ import com.igz.exception.IgzException;
  * GET /product/{id}		getProduct(String)
  * GET /product/id/{id}		getProduct(Long)
  * POST /product			postProduct(Params...)
+ * POST /product/json		postProductJson(product)
  *
  */
 @Path("/product")
@@ -139,5 +142,27 @@ public class ProductService {
 
    		return Response.ok().entity( new Gson().toJson( product ) ).build();
     }        
+    
+    /**
+     * Post a product
+     * 
+     * @return SC_OK
+     * @throws IgzException IGZ_INVALID_CATEGORY if category not found
+     */
+    @POST
+    @Path("/json")
+    @Produces("application/json;charset=UTF-8")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response postProductJSON( ProductDto product,
+    		@Context HttpServletRequest p_request  ) throws IgzException {
+    	
+    	// TODO Parameters validation
+//    	CategoryManager categoryM = new CategoryManager();
+//    	CategoryDto categoryDto = null;
+    	
+		productM.save(product);
+
+   		return Response.ok().entity( new Gson().toJson( product ) ).build();
+    }          
 
 }

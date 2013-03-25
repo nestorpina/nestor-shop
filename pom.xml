@@ -148,28 +148,6 @@
 				</dependencies>
 			</plugin>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-enforcer-plugin</artifactId>
-				<version>1.2</version>
-				<executions>
-					<execution>
-						<id>enforce-property</id>
-						<goals>
-							<goal>enforce</goal>
-						</goals>
-						<configuration>
-							<rules>
-								<requireProperty>
-									<property>env</property>
-									<message>[ERROR] You must set a resource folder (-Denv=local) property!</message>
-								</requireProperty>
-							</rules>
-							<fail>true</fail>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>findbugs-maven-plugin</artifactId>
 				<version>2.3.2</version>

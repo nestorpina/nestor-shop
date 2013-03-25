@@ -7,10 +7,10 @@
 <title>Nestor-shop Demo App</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Bootstrap -->
-<link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
-<link href="css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
+<link href="css/bootstrap-2.3.1.min.css" rel="stylesheet" media="screen">
+<link href="css/bootstrap-responsive-2.3.1.min.css" rel="stylesheet" media="screen">
 <script src="js/jquery1.9.0.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
+<script src="js/bootstrap-2.3.1.min.js"></script>
 <script src="js/angular/angular.min.js"></script>
 <script src="js/angular/angular-resource.min.js"></script>
 <script src="js/controllers.js"></script>

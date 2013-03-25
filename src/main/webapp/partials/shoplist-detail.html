@@ -7,7 +7,7 @@
 	
 	<p>Progress (items bought) :
 		<div class="progress progress-info progress-striped">
-			<div class="bar" style="width: {{shoplist.itemsBought / shoplist.itemsTotal * 100 }}%"></div>
+			<div class="bar" style="width: {{shoplist.itemsBought / shoplist.itemsTotal * 100 | number:0}}%"></div>
 		</div>
 	</p>
 	</div>

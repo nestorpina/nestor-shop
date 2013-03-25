@@ -40,3 +40,7 @@ function updateModel(list, object) {
 		}
 	});
 }
+
+function preventCache() {
+	return "?preventCache="+Math.random();;
+}

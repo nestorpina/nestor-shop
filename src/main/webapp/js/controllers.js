@@ -8,7 +8,7 @@ var currentSL;
  * - addProduct - add a product to the selected shopping list
  */
 function ProductListCtrl($scope, $http) {
-	$http.get('/s/product/all').success(function(data) {
+	$http.get('/s/product/all' + preventCache()).success(function(data) {
 		$scope.products = data;
 	});
 
@@ -34,7 +34,7 @@ function ProductListCtrl($scope, $http) {
  */
 function ProductDetailCtrl($scope, $routeParams, $http) {
 
-	$http.get('/s/product/id/' + $routeParams.productId).success(function(data) {
+	$http.get('/s/product/id/' + $routeParams.productId + preventCache()).success(function(data) {
 		$scope.product = data;
 	});
 }
@@ -48,7 +48,7 @@ function ProductDetailCtrl($scope, $routeParams, $http) {
  * - cancelAdd : hide form to create a shopping list
  */
 function ShopListsCtrl($scope, $http) {
-	$http.get('/s/shoplist/all').success(function(data) {
+	$http.get('/s/shoplist/all' + preventCache()).success(function(data) {
 		if(!data) data = [];
 		$scope.shoplists = data;
 		
@@ -99,7 +99,7 @@ function ShopListsCtrl($scope, $http) {
  */
 function ShopListDetailCtrl($scope, $routeParams, $http) {
 
-	$http.get('/s/shoplist/id/' + $routeParams.shoplistId).success(function(data) {
+	$http.get('/s/shoplist/id/' + $routeParams.shoplistId + preventCache()).success(function(data) {
 		$scope.shoplist = data;
 	});
 	
@@ -129,3 +129,5 @@ function ShopListDetailCtrl($scope, $routeParams, $http) {
 	};	
 	
 }
+
+

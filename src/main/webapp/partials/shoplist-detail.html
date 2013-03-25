@@ -1,20 +1,20 @@
-<h1>{{shoplist.shoplist.name}}</h1>
-<h4>Owner: {{ shoplist.shoplist.owner.name }}</h4>
+<h1>{{shoplist.name}}</h1>
+<h4>Owner: {{ shoplist.owner.name }}</h4>
 
 <div class="row">
 	<div class="span6">
-	<p>Creation date : {{shoplist.shoplist.creationDate}}</p>
+	<p>Creation date : {{shoplist.creationDate}}</p>
 	
 	<p>Progress (items bought) :
 		<div class="progress progress-info progress-striped">
-			<div class="bar" style="width: {{shoplist.shoplist.itemsBought / shoplist.shoplist.itemsTotal * 100 }}%"></div>
+			<div class="bar" style="width: {{shoplist.itemsBought / shoplist.itemsTotal * 100 }}%"></div>
 		</div>
 	</p>
 	</div>
 	<div class="span3">
-		<p>Items total : {{shoplist.shoplist.itemsTotal}}</p>
-		<p>Items bought : {{shoplist.shoplist.itemsBought}}</p>
-		<p>Items distinct : {{shoplist.shoplist.itemsDistinct}}</p>
+		<p>Items total : {{shoplist.itemsTotal}}</p>
+		<p>Items bought : {{shoplist.itemsBought}}</p>
+		<p>Items distinct : {{shoplist.itemsDistinct}}</p>
 	</div>
 </div>
 <table class="table table-striped">
@@ -26,7 +26,7 @@
     <th>Date Bought</th>
     <th>Remove</th>
 <tbody>
-  <tr ng-repeat="item in shoplist.items" ng-class="{success: item.bought}">
+  <tr ng-repeat="item in items" ng-class="{success: item.bought}">
   	<td><button class="btn btn-primary" ng-click="buyItem(item,$index)" ng-hide="item.bought">Buy</button></td>
   	<td>{{item.product.name}}</td>
   	<td>{{item.quantity}}</td>

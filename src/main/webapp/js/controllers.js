@@ -99,25 +99,28 @@ function ShopListsCtrl($scope, $http) {
  */
 function ShopListDetailCtrl($scope, $routeParams, $http) {
 
-	$http.get('/s/shoplist/id/' + $routeParams.shoplistId + preventCache()).success(function(data) {
+	$http.get('/s/shoplist/' + $routeParams.shoplistId + preventCache()).success(function(data) {
 		$scope.shoplist = data;
 	});
+	$http.get('/s/shoplist/' + $routeParams.shoplistId + '/items' + preventCache()).success(function(data) {
+		$scope.items = data;
+	});	
 	
 	$scope.buyItem = function(item) {
-		var shoplistId = $scope.shoplist.shoplist.id;
+		var shoplistId = $scope.shoplist.id;
 		$http.post('/s/shoplist/item/buy',{listId : shoplistId, itemId : item.id}).success(function(data) {
-//			updateModel($scope.shoplist.items,data)
-			$http.get('/s/shoplist/id/' + shoplistId).success(function(data) {
+			updateModel($scope.items,data)
+			$http.get('/s/shoplist/' + shoplistId + preventCache()).success(function(data) {
 				$scope.shoplist = data;
 			});			
 		});
 	};
 	
 	$scope.removeItem = function(item) {
-		var shoplistId = $scope.shoplist.shoplist.id;
+		var shoplistId = $scope.shoplist.id;
 		$http.post('/s/shoplist/item/remove',{listId : shoplistId, itemId : item.id}).success(function(data) {
-//			removeFromModel($scope.shoplist.items,item)
-			$http.get('/s/shoplist/id/' + shoplistId).success(function(data) {
+			removeFromModel($scope.items,item)
+			$http.get('/s/shoplist/' + shoplistId + preventCache()).success(function(data) {
 				$scope.shoplist = data;
 			});
 			if(shoplistId == currentSL) {

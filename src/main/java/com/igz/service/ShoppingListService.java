@@ -1,9 +1,7 @@
 package com.igz.service;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,15 +29,12 @@ import com.igz.entity.user.UserDto;
 import com.igz.exception.IgzException;
 import com.igzcode.java.util.Trace;
 
-import flexjson.JSONSerializer;
-import flexjson.transformer.DateTransformer;
-
 /**
  * Shopping list servlet
  * 
  * GET /shoplist/all			getAllShoppingList
- * GET /shoplist/{id}			getShoppingList(String)
- * GET /shoplist/id/{id}		getAllShoppingList(Long)
+ * GET /shoplist/{id}			getAllShoppingList(Long)
+ * GET /shoplist/{id}/items		getAllShoppingListItems(Long)
  * POST /shoplist/				addShoppingList()
  * DELETE /shoplist/{id}		removeShoppingList
  * POST /shoplist/item			putItemInShoppingList(Long)
@@ -82,34 +77,12 @@ public class ShoppingListService {
     /**
      * GET /shoplist/{id}		getShoppingList(String)
      * 
-     * Get shopping list by webSafeString id
+     * Get shopping list by long id
      * 
      * @return SC_OK
      */
     @GET
     @Path("/{id}")
-    @Produces("application/json;charset=UTF-8")
-    public Response getShoppingList( @PathParam("id") String listId, @Context HttpServletRequest p_request ) {
-    	
-    	ShoppingListDto sl = slM.getByKeyString(listId);
-
-    	if(sl == null) {
-    		throw new WebApplicationException(Status.NOT_FOUND);
-    	} else {
-    		String json = buildShoppingListJson(sl);
-			return Response.ok().entity( json ).build();
-    	}
-    }
-    
-    /**
-     * GET /shoplist/id/{id}	getAllShoppingList(Long)
-     * 
-     * Get shopping list by id, where the user logged in the session is the owner
-     * 
-     * @return SC_OK
-     */
-    @GET
-    @Path("/id/{id}")
     @Produces("application/json;charset=UTF-8")
     public Response getShoppingList( @PathParam("id") Long listId, @Context HttpServletRequest p_request ) {
     	
@@ -119,11 +92,34 @@ public class ShoppingListService {
 			sl = slM.getByUserAndId(user, listId);
 		} catch (IgzException e) {
 			throw new WebApplicationException(Status.NOT_FOUND);
-		} 
-
-		String json = buildShoppingListJson(sl);
-   		return Response.ok().entity( json ).build();
-    }    
+		}
+		 return Response.ok().entity( new Gson().toJson( sl ) ).build();
+    }
+    
+    /**
+     * GET /shoplist/{id}/items		getShoppingListItems(String)
+     * 
+     * Get shopping list items by long id
+     * 
+     * @return SC_OK
+     */
+    @GET
+    @Path("/{id}/items")
+    @Produces("application/json;charset=UTF-8")
+    public Response getShoppingListItems( @PathParam("id") Long listId, @Context HttpServletRequest p_request ) {
+    	
+    	UserDto user = (UserDto) p_request.getAttribute("USER");
+    	
+    	List<ShoppingListItemDto> shoppingListItems;
+		try {
+			ShoppingListDto sl = slM.getByUserAndId(user, listId);
+			shoppingListItems = slM.getShoppingListItems(sl.getKey());
+			
+		} catch (IgzException e) {
+			throw new WebApplicationException(Status.NOT_FOUND);
+		}
+		 return Response.ok().entity( new Gson().toJson( shoppingListItems ) ).build();
+    }
 
     /**
      * POST /shoplist/item		putItemInShoppingList
@@ -275,12 +271,4 @@ public class ShoppingListService {
 		LOGGER.severe(error);
 		return Response.status( HttpServletResponse.SC_BAD_REQUEST).entity( e.toJsonError() ).build();
 	}  
-	
-	private String buildShoppingListJson(ShoppingListDto sl) {
-		List<ShoppingListItemDto> shoppingListItems = slM.getShoppingListItems(sl.getKey());
-		Map<String,Object> result = new HashMap<String,Object>();
-		result.put("shoplist", sl);
-		result.put("items", shoppingListItems);
-		return new JSONSerializer().exclude("*.class","*.raw","*.root").transform(new DateTransformer("dd/MM/yyyy HH:mm:ss"), Date.class).deepSerialize(result);
-	}	
 }

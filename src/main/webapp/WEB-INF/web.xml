@@ -18,6 +18,10 @@
 			<param-name>com.sun.jersey.config.feature.DisableWADL</param-name>
 			<param-value>true</param-value>
 		</init-param>
+		<init-param>
+		    <param-name>com.sun.jersey.spi.container.ResourceFilters</param-name>
+		    <param-value>com.igz.service.filter.CacheFilterFactory</param-value>
+		</init-param>		
 		<load-on-startup>2</load-on-startup>
 	</servlet>
 	<servlet-mapping>

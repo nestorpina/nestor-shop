@@ -7,8 +7,9 @@ var currentSL;
  * Methods : 
  * - addProduct - add a product to the selected shopping list
  */
-function ProductListCtrl($scope, $http) {
-	$http.get('/s/product/all' + preventCache()).success(function(data) {
+function ProductListCtrl($scope, $http, $location) {
+	$http.get('/s/product/all' + preventCache())
+	.success(function(data) {
 		$scope.products = data;
 	});
 

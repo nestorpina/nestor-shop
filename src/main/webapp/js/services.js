@@ -3,8 +3,10 @@
 /* Services */
 
 angular.module('nestorshopServices', ['ngResource']).
-    factory('product', function($resource){
-  return $resource('product/:productId.json', {}, {
+    factory('productService', function($resource){
+  return $resource('s/product/:productId'+preventCache(), {productId: '@id'}, {
     query: {method:'GET', params:{productId:'products'}, isArray:true}
-  });
+  });	
 });
+
+

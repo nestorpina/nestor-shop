@@ -29,8 +29,7 @@ import com.igz.exception.IgzException;
  * Products servlet
  * 
  * GET /product/all			getAllProducts
- * GET /product/{id}		getProduct(String)
- * GET /product/id/{id}		getProduct(Long)
+ * GET /product/{id}		getProduct(Long)
  * POST /product			postProduct(Params...)
  * POST /product/json		postProductJson(product)
  *
@@ -60,31 +59,12 @@ public class ProductService {
     }    
     
     /**
-     * Get product by by webSafeString id
+     * Get product by long id
      * 
      * @return SC_OK
      */
     @GET
     @Path("/{id}")
-    @Produces("application/json;charset=UTF-8")
-    public Response getProduct( @PathParam("id") String productId, @Context HttpServletRequest p_request ) {
-    	
-    	ProductDto product = productM.getByKeyString(productId);
-
-    	if(product == null) {
-    		throw new WebApplicationException(Status.NOT_FOUND);
-    	} else {
-    		return Response.ok().entity( new Gson().toJson( product ) ).build();
-    	}
-    }
-    
-    /**
-     * Get product by id
-     * 
-     * @return SC_OK
-     */
-    @GET
-    @Path("/id/{id}")
     @Produces("application/json;charset=UTF-8")
     public Response getProduct( @PathParam("id") Long productId, @Context HttpServletRequest p_request ) {
     	

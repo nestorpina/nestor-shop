@@ -1,6 +1,6 @@
 <div class="container-fluid">
-  <div class="row-fluid">
-    <div class="form-search">
+  <div class="row">
+    <div class="span6 form-search">
     <h1>Product List</h1>
 	  <div class="row offset1">
 	      Search: <input ng-model="query" class="search-query">
@@ -21,6 +21,10 @@
 	      </select>
 	   </div>
     </div>
+    <div class="span3">
+    	<a href="#/products/new" class="btn btn-primary">New Product</a>
+    </div>
+  </div>
 
       
 <table class="table table-striped">
@@ -32,7 +36,7 @@
 <tbody>
   <tr ng-repeat="product in products | filter:query | filter:category.name | orderBy:orderProp"">
   	<td> 
-  		<dt><a href="#/products/{{product.id}}">{{product.name}}</a> </dt>
+  		<dt><a href="#/product/{{product.id}}">{{product.name}}</a> </dt>
   		<dd>{{product.description}}</dd>	
   	</td>
   	<td>{{product.category.name}}</td>
@@ -41,6 +45,5 @@
 </tbody>    
 </table>      
 
-  </div>
 </div>
 

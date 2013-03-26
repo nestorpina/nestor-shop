@@ -1,0 +1,41 @@
+<div class="container-fluid">
+  <div class="row-fluid">
+    
+<ng-form name="newForm">
+
+<form>
+  <fieldset>
+    <legend>Create a new Product</legend>
+	  <div ng-show="!newForm.$valid" class="alert alert-error"><i class="icon-exclamation-sign"></i> Please, fill all the required (*) fields</div>
+	  <div ng-show="newForm.$valid" class="alert alert-success"><i class="icon-ok"></i> Ready to save</div>
+    <label for="name">Name *</label>
+    <input type="text" placeholder="Product name..." ng-model="product.name" id="name" required>
+    <label for="description">Description</label>
+    <textarea rows="3" ng-model="product.description" id="description"></textarea>
+    <label for="category">Category *</label>
+    <select ng-model="product.category" id="category" required>
+      	<option value="">-All-</option>
+        <option value="1">Food</option>
+        <option value="2">Gadgets</option>
+    </select>
+    <label for="unitType">Unit Type *</label>
+    <select ng-model="product.unitType" required id="unitType">
+      	<option value="">-</option>
+        <option value="ITEM">Items</option>
+        <option value="LITER">Liters</option>
+        <option value="KG">Kg.</option>
+    </select>
+    <label for="units">Units *</label>
+    <input type="number" placeholder="number of units..." ng-model="product.units" required min="1" id="units">
+  </fieldset>
+	<div class="form-actions">
+	  
+	
+	  <button type="submit" class="btn btn-primary" ng-disabled="!newForm.$valid" ng-click="newForm.$valid && addNewProduct()">Save changes</button>
+	  <button type="button" class="btn" ng-click="cancelAdd()">Cancel</button>
+	</div>      
+</form>
+
+</ng-form>
+  </div>
+</div>

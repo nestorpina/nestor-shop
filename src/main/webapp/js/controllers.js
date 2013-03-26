@@ -33,11 +33,32 @@ function ProductListCtrl($scope, $http, $location) {
  * Product Detail
  * Methods :  
  */
-function ProductDetailCtrl($scope, $routeParams, $http) {
+function ProductDetailCtrl($scope, $routeParams, $http, productService) {
 
-	$http.get('/s/product/id/' + $routeParams.productId + preventCache()).success(function(data) {
+	$http.get('/s/product/' + $routeParams.productId + preventCache()).success(function(data) {
 		$scope.product = data;
 	});
+
+}
+
+/**
+ * Product Add Form
+ * Methods :  
+ * - cancelAdd : returns to previos page
+ * - addNewProduct : adds a product to the bbdd
+ */
+function ProductNewCtrl($scope, $routeParams, $http, $window, productService) {
+
+	$scope.cancelAdd = function() {
+		$window.history.back();
+	};	
+
+	
+	$scope.addNewProduct = function() {
+		$http.post('/s/product/', $scope.product).success(function(data) {
+			alert('Product saved!');
+		});
+	};
 }
 
 /**

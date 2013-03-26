@@ -15,8 +15,9 @@ var myModule = angular.module('nestorshop', ['nestorshopServices'], function($ht
   // Routing Config
   config(['$routeProvider', function($routeProvider) {
   $routeProvider.
+  	  when('/products/new', {templateUrl: 'partials/product-new.html'+preventCache(),   controller: ProductNewCtrl}).
       when('/products', {templateUrl: 'partials/product-list.html'+preventCache(),   controller: ProductListCtrl}).
-      when('/products/:productId', {templateUrl: 'partials/product-detail.html'+preventCache(), controller: ProductDetailCtrl}).
+      when('/product/:productId', {templateUrl: 'partials/product-detail.html'+preventCache(), controller: ProductDetailCtrl}).
       when('/shoplists', {templateUrl: 'partials/shoplist-list.html'+preventCache(),   controller: ShopListsCtrl}).
       when('/shoplists/:shoplistId', {templateUrl: 'partials/shoplist-detail.html'+preventCache(),   controller: ShopListDetailCtrl}).
       otherwise({redirectTo: '/products'});

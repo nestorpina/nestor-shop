@@ -25,8 +25,6 @@ import com.igz.exception.IgzException;
 import com.igz.helpers.TestHelper;
 import com.igz.test.helper.ExceptionMatcher;
 
-import flexjson.JSONSerializer;
-
 @RunWith(value=BlockJUnit4ClassRunner.class)
 public class ShoppingListManagerTest extends TestCase {
 
@@ -343,7 +341,6 @@ public class ShoppingListManagerTest extends TestCase {
     	shoppingListM.addProduct(list.getKey(), TestHelper.product1);
     	List<ShoppingListItemDto> items = shoppingListM.getShoppingListItems(list.getKey());
 		assertEquals(TestHelper.product1.getName(), items.get(0).getProduct().getName());
-    	System.out.println(new JSONSerializer().exclude("*.class","*.raw","*.root").prettyPrint(true).serialize(items));
     }
     
     /* --------------- Helper methods --------------------- */

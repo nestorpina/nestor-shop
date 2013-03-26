@@ -1,6 +1,7 @@
 Nestor-shop Demo Application
 
-## Example application for use with App Engine Java, objetify and Jersey JAX-RS, using igz-code-gae libraries 
+## Example application for use with App Engine Java, objetify and Jersey JAX-RS, using igz-code-gae libraries
+## For frontend it uses AngularJS, Bootstrap and jQuery.  
 
 Requires [Apache Maven](http://maven.apache.org) 3.0 or greater, and JDK 6+ in order to run.
 
@@ -12,7 +13,7 @@ Building will run the tests, but to explicitly run tests you can use the test ta
 
     mvn test
 
-To start the app, use the [Maven GAE Plugin](https://github.com/maven-gae-plugin/maven-gae-plugin) that is already included in this demo.  Just run the command.
+To start the app, use the [Maven GAE Plugin[https://github.com/maven-gae-plugin/maven-gae-plugin) that is already included in this demo.  Just run the command.
 
     mvn gae:run
     
@@ -27,5 +28,7 @@ To access de gae administration console enter
 To stop the running local instance, execute
 
     mvn gae:stop
+    
+A running instance of the application could be found on : [http://nestor-shop.appspot.com](http://nestor-shop.appspot.com)
     
  

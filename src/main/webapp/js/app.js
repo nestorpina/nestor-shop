@@ -12,6 +12,7 @@ var myModule = angular.module('nestorshop', ['nestorshopServices'], function($ht
 	  }];	
 	
   }).
+  // Routing Config
   config(['$routeProvider', function($routeProvider) {
   $routeProvider.
       when('/products', {templateUrl: 'partials/product-list.html'+preventCache(),   controller: ProductListCtrl}).

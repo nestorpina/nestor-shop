@@ -55,8 +55,11 @@ function ProductNewCtrl($scope, $routeParams, $http, $window, productService) {
 
 	
 	$scope.addNewProduct = function() {
+		$('#saveButton').button('loading');
 		$http.post('/s/product/', $scope.product).success(function(data) {
 			alert('Product saved!');
+		}).then(function() {
+			$('#saveButton').button('reset');
 		});
 	};
 }

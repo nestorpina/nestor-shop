@@ -31,7 +31,8 @@
 	<div class="form-actions">
 	  
 	
-	  <button type="submit" class="btn btn-primary" ng-disabled="!newForm.$valid" ng-click="newForm.$valid && addNewProduct()">Save changes</button>
+	  <button type="submit" class="btn btn-primary" ng-disabled="!newForm.$valid" ng-click="newForm.$valid && addNewProduct()" 
+	  		  data-loading-text="<i class='icon-spinner icon-spin'></i> Saving..." id="saveButton">Save changes</button>
 	  <button type="button" class="btn" ng-click="cancelAdd()">Cancel</button>
 	</div>      
 </form>

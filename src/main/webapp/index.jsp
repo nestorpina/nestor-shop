@@ -10,6 +10,7 @@
 <%-- Important: jquery js must be loaded before Bootsrap js --%>
 <link href="css/bootstrap-2.3.1.min.css" rel="stylesheet" media="screen">
 <link href="css/bootstrap-responsive-2.3.1.min.css" rel="stylesheet" media="screen">
+<link href="css/font-awesome.min.css" rel="stylesheet" media="screen">
 <script src="js/jquery1.9.0.min.js"></script>
 <script src="js/bootstrap-2.3.1.min.js"></script>
 <script src="js/jquery-ui-1.10.2.custom.min.js"></script>
@@ -30,6 +31,7 @@ $(function() {
 	});
 	// Close button on alerts
 	$(".alert").alert()
+	$('button').button()
 });
 </script>
 <style>

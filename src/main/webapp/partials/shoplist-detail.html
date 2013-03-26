@@ -27,7 +27,7 @@
     <th>Remove</th>
 <tbody>
   <tr ng-repeat="item in items" ng-class="{success: item.bought}">
-  	<td><button class="btn btn-primary" ng-click="buyItem(item,$index)" ng-hide="item.bought">Buy</button></td>
+  	<td><button class="btn btn-primary btn-success" ng-click="buyItem(item,$index)" ng-hide="item.bought"><i class="icon-shopping-cart"></i> Buy</button></td>
   	<td>{{item.product.name}}</td>
   	<td>{{item.quantity}}</td>
   	<td>{{item.dateBought}}</td>

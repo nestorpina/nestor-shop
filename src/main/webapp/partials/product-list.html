@@ -1,6 +1,6 @@
 <div class="container-fluid">
   <div class="row">
-    <div class="span6 form-search">
+    <div class=" form-search">
     <h1>Product List</h1>
 	  <div class="row offset1">
 	      Search: <input ng-model="query" class="search-query">
@@ -20,13 +20,11 @@
 	        <option value="category.name">Category</option>
 	      </select>
 	   </div>
-    </div>
-    <div class="span3">
-    	<a href="#/products/new" class="btn btn-primary">New Product</a>
-    </div>
+	 </div>
   </div>
-
-      
+<div class="form-actions">
+    	<a href="#/products/new" class="btn btn-primary pull-right">New Product</a>
+</div>      
 <table class="table table-striped">
 <thead>
   <tr>

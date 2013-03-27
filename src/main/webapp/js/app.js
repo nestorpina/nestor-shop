@@ -37,8 +37,8 @@ myModule.factory('myHttpInterceptor', function ($q) {
         	if(response.status == 401) {
         		alert("Session timeout");
         		window.location.href="/_ah/login?continue=/";
-        	} else {
-        		alert("Error status : " + response.status )
+        	} else if(response.status == 500) { 
+        		alert("Unexpected error");
         	}
             return $q.reject(response);
         });

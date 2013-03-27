@@ -58,7 +58,10 @@ function ProductNewCtrl($scope, $routeParams, $http, $window, productService) {
 		$('#saveButton').button('loading');
 		$http.post('/s/product/', $scope.product).success(function(data) {
 			alert('Product saved!');
-		}).then(function() {
+		}).error(function() {
+			alert('Duplicate product name');
+		}).
+		then(function() {
 			$('#saveButton').button('reset');
 		});
 	};

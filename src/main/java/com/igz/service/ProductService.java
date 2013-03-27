@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -24,6 +25,7 @@ import com.igz.entity.product.ProductDto;
 import com.igz.entity.product.ProductDto.UnitType;
 import com.igz.entity.product.ProductManager;
 import com.igz.exception.IgzException;
+import com.igzcode.java.util.Trace;
 
 /**
  * Products servlet
@@ -88,7 +90,6 @@ public class ProductService {
      * @param p_request
      * 
      * @return SC_OK
-     * @throws IgzException IGZ_INVALID_CATEGORY if category not found
      */
     @POST
     @Produces("application/json;charset=UTF-8")
@@ -98,27 +99,22 @@ public class ProductService {
     		@FormParam("category") Long category,
     		@FormParam("units") Integer units, 
     		@FormParam("unitType") UnitType unitType, 
-    		@Context HttpServletRequest p_request  ) throws IgzException {
+    		@Context HttpServletRequest p_request  ) {
     	
-    	// TODO Parameters validation
-    	CategoryManager categoryM = new CategoryManager();
-    	CategoryDto categoryDto = null;
-    	if(category != null) {
-			try {
-				categoryDto = categoryM.getByLongId(category);
-			} catch (IgzException e) {
-				throw new IgzException(IgzException.IGZ_INVALID_CATEGORY);
-			}
-    	}
     	ProductDto product = new ProductDto();
     	product.setCreationDate(new Date());
     	product.setName(name);
     	product.setDescription(description);
-    	product.setCategory(categoryDto);
+    	product.setCategory(new CategoryDto(category));
     	product.setUnits(units);
     	product.setUnitType(unitType);
     	
-		productM.save(product);
+		try {
+			productM.saveProduct(product);
+		} catch (IgzException e) {
+			return Response.status( HttpServletResponse.SC_BAD_REQUEST).entity( e.toJsonError() ).build();
+		}  
+		
 
    		return Response.ok().entity( new Gson().toJson( product ) ).build();
     }        
@@ -136,11 +132,11 @@ public class ProductService {
     public Response postProductJSON( ProductDto product,
     		@Context HttpServletRequest p_request  ) throws IgzException {
     	
-    	// TODO Parameters validation
-//    	CategoryManager categoryM = new CategoryManager();
-//    	CategoryDto categoryDto = null;
-    	
-		productM.save(product);
+		try {
+			productM.saveProduct(product);
+		} catch (IgzException e) {
+			return Response.status( HttpServletResponse.SC_BAD_REQUEST).entity( e.toJsonError() ).build();
+		}  
 
    		return Response.ok().entity( new Gson().toJson( product ) ).build();
     }          

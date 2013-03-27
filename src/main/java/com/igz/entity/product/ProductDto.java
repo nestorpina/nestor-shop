@@ -15,6 +15,7 @@ public class ProductDto implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	public static final String CATEGORY = "category";
+	public static final String NAME = "name";
 	
 	@Id private Long id;
 	@Index private String name;

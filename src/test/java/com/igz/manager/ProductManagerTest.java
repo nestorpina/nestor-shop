@@ -16,10 +16,13 @@ import org.junit.runners.BlockJUnit4ClassRunner;
 import com.google.appengine.tools.development.testing.LocalBlobstoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.igz.entity.category.CategoryDto;
 import com.igz.entity.product.ProductDto;
 import com.igz.entity.product.ProductManager;
+import com.igz.entity.product.ProductDto.UnitType;
 import com.igz.exception.IgzException;
 import com.igz.helpers.TestHelper;
+import com.igz.test.helper.ExceptionMatcher;
 
 @RunWith(value=BlockJUnit4ClassRunner.class)
 public class ProductManagerTest extends TestCase {
@@ -77,4 +80,103 @@ public class ProductManagerTest extends TestCase {
     	assertEquals("number of gadgets products", 2, gadgets.size());
     }
     
+    @Test 
+    public void TestSaveProduct() throws IgzException {
+    	ProductDto product = new ProductDto();
+    	product.setCategory(new CategoryDto(TestHelper.category1.getId().toString()));
+    	product.setName("save product test");
+    	product.setUnits(1);
+    	product.setUnitType(UnitType.KG);
+    	ProductDto savedProduct = manager.saveProduct(product);
+    	assertNotNull("Assigned id",savedProduct.getId());
+    }
+
+    @Test 
+    public void TestSaveProductInvalidCategory() throws IgzException {
+    	thrown.expect(IgzException.class);
+    	thrown.expect(ExceptionMatcher.hasCode(IgzException.IGZ_INVALID_PARAMS));
+
+    	ProductDto product = new ProductDto();
+    	product.setCategory(new CategoryDto());
+    	product.setName("save product test");
+    	product.setUnits(1);
+    	product.setUnitType(UnitType.KG);
+    	manager.saveProduct(product);
+    }    
+    
+    @Test 
+    public void TestSaveProductInvalidParamsNoCategory() throws IgzException {
+    	thrown.expect(IgzException.class);
+    	thrown.expect(ExceptionMatcher.hasCode(IgzException.IGZ_INVALID_CATEGORY));
+
+    	ProductDto product = new ProductDto();
+    	product.setCategory(new CategoryDto("-1"));
+    	product.setName("save product test");
+    	product.setUnits(1);
+    	product.setUnitType(UnitType.KG);
+    	manager.saveProduct(product);
+    }
+    
+    @Test 
+    public void TestSaveProductInvalidParamsNoCategory2() throws IgzException {
+    	thrown.expect(IgzException.class);
+    	thrown.expect(ExceptionMatcher.hasCode(IgzException.IGZ_INVALID_PARAMS));
+
+    	ProductDto product = new ProductDto();
+    	product.setCategory(new CategoryDto());
+    	product.setName("save product test");
+    	product.setUnits(1);
+    	product.setUnitType(UnitType.KG);
+    	manager.saveProduct(product);
+    }    
+    
+    @Test 
+    public void TestSaveProductInvalidParamsNoName() throws IgzException {
+    	thrown.expect(IgzException.class);
+    	thrown.expect(ExceptionMatcher.hasCode(IgzException.IGZ_INVALID_PARAMS));
+
+    	ProductDto product = new ProductDto();
+    	product.setCategory(new CategoryDto(TestHelper.category1.getId().toString()));
+    	product.setUnits(1);
+    	product.setUnitType(UnitType.KG);
+    	manager.saveProduct(product);
+    } 
+    
+    @Test 
+    public void TestSaveProductInvalidParamsNoUnits() throws IgzException {
+    	thrown.expect(IgzException.class);
+    	thrown.expect(ExceptionMatcher.hasCode(IgzException.IGZ_INVALID_PARAMS));
+
+    	ProductDto product = new ProductDto();
+    	product.setCategory(new CategoryDto(TestHelper.category1.getId().toString()));
+    	product.setName("save product test");
+    	product.setUnitType(UnitType.KG);
+    	manager.saveProduct(product);
+    }     
+    
+    @Test 
+    public void TestSaveProductInvalidParamsNoUnitType() throws IgzException {
+    	thrown.expect(IgzException.class);
+    	thrown.expect(ExceptionMatcher.hasCode(IgzException.IGZ_INVALID_PARAMS));
+
+    	ProductDto product = new ProductDto();
+    	product.setCategory(new CategoryDto(TestHelper.category1.getId().toString()));
+    	product.setName("save product test");
+    	product.setUnits(1);
+    	manager.saveProduct(product);
+    }         
+    
+    @Test 
+    public void TestSaveProductDuplicate() throws IgzException {
+    	thrown.expect(IgzException.class);
+    	thrown.expect(ExceptionMatcher.hasCode(IgzException.IGZ_DUPLICATE_PRODUCT));
+    	
+    	ProductDto product = new ProductDto();
+    	product.setCategory(new CategoryDto(TestHelper.category1.getId().toString()));
+    	product.setName(TestHelper.product1.getName());
+    	product.setUnits(1);
+    	product.setUnitType(UnitType.KG);
+    	ProductDto savedProduct = manager.saveProduct(product);
+    }
+
 }

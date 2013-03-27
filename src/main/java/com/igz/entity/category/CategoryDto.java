@@ -29,6 +29,10 @@ public class CategoryDto implements Serializable{
 		id = Long.valueOf(idString);
 	}
 	
+	public CategoryDto(Long idString) {
+		id = idString;
+	}
+	
 	public Key<CategoryDto> getKey() {
 		return Key.create(CategoryDto.class, id);
 	}

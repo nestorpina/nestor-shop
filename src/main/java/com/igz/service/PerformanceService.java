@@ -110,4 +110,46 @@ public class PerformanceService {
    		return Response.ok().entity( new Gson().toJson( result ) ).build();
     }    
     
+    @GET
+    @Path("/insert/")
+    @Produces("application/json;charset=UTF-8")
+    public Response insertItemInDatastore( @Context HttpServletRequest p_request ) {
+    	
+     	StopWatch stopwatch = new StopWatch();
+    	stopwatch.start();
+    	Map<String,String> result = new HashMap<String, String>();
+		String id = UUID.randomUUID().toString();
+		DatastoreObject object = new DatastoreObject();
+		object.setId(id);
+		object.setJson(json);
+		ofy().save().entity(object).now();
+		stopwatch.suspend();
+	    result.put("id", id);
+	    result.put("time", ""+stopwatch.getTime());
+	    
+		
+   		return Response.ok().entity( new Gson().toJson( result ) ).build();
+    }    
+    
+    @GET
+    @Path("/select/{id}")
+    @Produces("application/json;charset=UTF-8")
+    public Response selectItemFromDatastore( @PathParam("id") String id, @Context HttpServletRequest p_request ) {
+    	
+    	Map<String,String> result = new HashMap<String, String>();
+     	StopWatch stopwatch = new StopWatch();
+    	stopwatch.start();
+		DatastoreObject object = ofy().load().type(DatastoreObject.class).id(id).get();
+
+		if(object==null) {
+			throw new NullPointerException("object with id "+id+" not found");
+		}
+		
+		stopwatch.suspend();
+	    result.put("id", id);
+	    result.put("time", ""+stopwatch.getTime());
+		
+   		return Response.ok().entity( new Gson().toJson( result ) ).build();
+    }  
+    
 }
